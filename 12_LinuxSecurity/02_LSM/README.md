@@ -30,7 +30,7 @@
 
 | | File | Type |
 |:---:|:---|:---|
-| 📄 | [01_LSM.Md](01_LSM.Md) | Markdown |
+| 📄 | [01_LSM.md](01_LSM.md) | Markdown |
 
 ---
 

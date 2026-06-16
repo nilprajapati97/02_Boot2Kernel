@@ -20,10 +20,10 @@
 
 | | File | Type |
 |:---:|:---|:---|
-| 📄 | [00_SELinux.Md](00_SELinux.Md) | Markdown |
-| 📄 | [01_MinimumConfig.Md](01_MinimumConfig.Md) | Markdown |
-| 📄 | [02_PracticalExampleSELinux.Md](02_PracticalExampleSELinux.Md) | Markdown |
-| 📄 | [03_Rules.Md](03_Rules.Md) | Markdown |
+| 📄 | [00_SELinux.md](00_SELinux.md) | Markdown |
+| 📄 | [01_MinimumConfig.md](01_MinimumConfig.md) | Markdown |
+| 📄 | [02_PracticalExampleSELinux.md](02_PracticalExampleSELinux.md) | Markdown |
+| 📄 | [03_Rules.md](03_Rules.md) | Markdown |
 
 ---
 

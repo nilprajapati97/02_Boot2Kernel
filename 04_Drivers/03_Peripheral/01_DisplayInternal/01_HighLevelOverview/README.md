@@ -20,9 +20,9 @@
 
 | | File | Type |
 |:---:|:---|:---|
-| 📄 | [00_HighLevelFLow.Md](00_HighLevelFLow.Md) | Markdown |
-| 📄 | [01_DisplaySubsystem.Md](01_DisplaySubsystem.Md) | Markdown |
-| 📄 | [01_Display_Interface.Md](01_Display_Interface.Md) | Markdown |
+| 📄 | [00_HighLevelFLow.md](00_HighLevelFLow.md) | Markdown |
+| 📄 | [01_DisplaySubsystem.md](01_DisplaySubsystem.md) | Markdown |
+| 📄 | [01_Display_Interface.md](01_Display_Interface.md) | Markdown |
 
 ---
 

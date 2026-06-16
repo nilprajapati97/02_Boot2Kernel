@@ -20,8 +20,8 @@
 
 | | File | Type |
 |:---:|:---|:---|
-| 📄 | [01_GPIO_Driver.Md](01_GPIO_Driver.Md) | Markdown |
-| 📄 | [02_Example.Md](02_Example.Md) | Markdown |
+| 📄 | [01_GPIO_Driver.md](01_GPIO_Driver.md) | Markdown |
+| 📄 | [02_Example.md](02_Example.md) | Markdown |
 
 ---
 

@@ -20,8 +20,8 @@
 
 | | File | Type |
 |:---:|:---|:---|
-| 📄 | [01_DecodedFrameToDisplay.Md](01_DecodedFrameToDisplay.Md) | Markdown |
-| 📄 | [02_HowPixelsLeavesSOC.Md](02_HowPixelsLeavesSOC.Md) | Markdown |
+| 📄 | [01_DecodedFrameToDisplay.md](01_DecodedFrameToDisplay.md) | Markdown |
+| 📄 | [02_HowPixelsLeavesSOC.md](02_HowPixelsLeavesSOC.md) | Markdown |
 | 🖼️ | [03_HowPixelsLeavesSOC.png](03_HowPixelsLeavesSOC.png) | Image |
 
 ---

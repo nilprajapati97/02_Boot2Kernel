@@ -21,8 +21,8 @@
 | | File | Type |
 |:---:|:---|:---|
 | 📄 | [01_Final_UBoot_Porting.md](01_Final_UBoot_Porting.md) | Markdown |
-| 📄 | [02_UbootLinkerScripts.Md](02_UbootLinkerScripts.Md) | Markdown |
-| 📄 | [02_UbootLogsAnalysis.Md](02_UbootLogsAnalysis.Md) | Markdown |
+| 📄 | [02_UbootLinkerScripts.md](02_UbootLinkerScripts.md) | Markdown |
+| 📄 | [02_UbootLogsAnalysis.md](02_UbootLogsAnalysis.md) | Markdown |
 
 ---
 

@@ -20,7 +20,7 @@
 
 | | File | Type |
 |:---:|:---|:---|
-| 📄 | [01_CameraSubsystem.Md](01_CameraSubsystem.Md) | Markdown |
+| 📄 | [01_CameraSubsystem.md](01_CameraSubsystem.md) | Markdown |
 
 ---
 

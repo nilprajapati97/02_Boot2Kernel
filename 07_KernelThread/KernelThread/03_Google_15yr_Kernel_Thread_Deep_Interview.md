@@ -1188,4 +1188,4 @@ void ordered_processor_destroy(struct ordered_processor *proc)
 
 ---
 
-[← Previous: 02 — Qualcomm 15yr Deep](02_Qualcomm_15yr_Kernel_Thread_Deep_Interview.md) | [Back to Index →](../ReadMe.Md)
+[← Previous: 02 — Qualcomm 15yr Deep](02_Qualcomm_15yr_Kernel_Thread_Deep_Interview.md) | [Back to Index →](../README.md)

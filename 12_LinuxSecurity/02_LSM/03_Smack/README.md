@@ -20,8 +20,8 @@
 
 | | File | Type |
 |:---:|:---|:---|
-| 📄 | [01_Smack.Md](01_Smack.Md) | Markdown |
-| 📄 | [02_SmackBlockWise.Md](02_SmackBlockWise.Md) | Markdown |
+| 📄 | [01_Smack.md](01_Smack.md) | Markdown |
+| 📄 | [02_SmackBlockWise.md](02_SmackBlockWise.md) | Markdown |
 
 ---
 

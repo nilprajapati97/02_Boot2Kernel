@@ -20,8 +20,8 @@
 
 | | File | Type |
 |:---:|:---|:---|
-| 📄 | [00_J1939.Md](00_J1939.Md) | Markdown |
-| 📄 | [02_PracticaleUsecase.Md](02_PracticaleUsecase.Md) | Markdown |
+| 📄 | [00_J1939.md](00_J1939.md) | Markdown |
+| 📄 | [02_PracticaleUsecase.md](02_PracticaleUsecase.md) | Markdown |
 
 ---
 

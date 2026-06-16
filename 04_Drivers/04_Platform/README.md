@@ -26,8 +26,8 @@
 
 | | File | Type |
 |:---:|:---|:---|
-| 📄 | [01_HowLinuxHandlesGPIOInternally.Md](01_HowLinuxHandlesGPIOInternally.Md) | Markdown |
-| 📄 | [01_PlatformDriver.Md](01_PlatformDriver.Md) | Markdown |
+| 📄 | [01_HowLinuxHandlesGPIOInternally.md](01_HowLinuxHandlesGPIOInternally.md) | Markdown |
+| 📄 | [01_PlatformDriver.md](01_PlatformDriver.md) | Markdown |
 
 ---
 

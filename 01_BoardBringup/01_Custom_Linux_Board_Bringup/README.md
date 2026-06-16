@@ -35,7 +35,7 @@
 
 | | File | Type |
 |:---:|:---|:---|
-| 📄 | [00_Board_Bringup_Checklist.Md](00_Board_Bringup_Checklist.Md) | Markdown |
+| 📄 | [00_Board_Bringup_Checklist.md](00_Board_Bringup_Checklist.md) | Markdown |
 
 ---
 

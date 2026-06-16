@@ -20,9 +20,9 @@
 
 | | File | Type |
 |:---:|:---|:---|
-| 📄 | [00_I2C_Questions.Md](00_I2C_Questions.Md) | Markdown |
-| 📄 | [02_StatusRegistor.Md](02_StatusRegistor.Md) | Markdown |
-| 📄 | [03_StatusRegisterUpdateDiagram.Md](03_StatusRegisterUpdateDiagram.Md) | Markdown |
+| 📄 | [00_I2C_Questions.md](00_I2C_Questions.md) | Markdown |
+| 📄 | [02_StatusRegistor.md](02_StatusRegistor.md) | Markdown |
+| 📄 | [03_StatusRegisterUpdateDiagram.md](03_StatusRegisterUpdateDiagram.md) | Markdown |
 
 ---
 

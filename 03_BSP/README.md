@@ -28,10 +28,10 @@
 |:---:|:---|:---|
 | 📄 | [01_BSP_Topics.md](01_BSP_Topics.md) | Markdown |
 | 📄 | [02_BSP_Questions.md](02_BSP_Questions.md) | Markdown |
-| 📄 | [03_KernelCompilationTimings.Md](03_KernelCompilationTimings.Md) | Markdown |
-| 📄 | [04_BSP_ReuseFlow.Md](04_BSP_ReuseFlow.Md) | Markdown |
+| 📄 | [03_KernelCompilationTimings.md](03_KernelCompilationTimings.md) | Markdown |
+| 📄 | [04_BSP_ReuseFlow.md](04_BSP_ReuseFlow.md) | Markdown |
 | 📄 | [04_Questions.md](04_Questions.md) | Markdown |
-| 📄 | [05_TImings.Md](05_TImings.Md) | Markdown |
+| 📄 | [05_TImings.md](05_TImings.md) | Markdown |
 | 📄 | [BSPBringupLogs.md](BSPBringupLogs.md) | Markdown |
 
 ---

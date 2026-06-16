@@ -20,9 +20,9 @@
 
 | | File | Type |
 |:---:|:---|:---|
-| 📄 | [00_QNX.Md](00_QNX.Md) | Markdown |
-| 📄 | [01_AsHyperviser.Md](01_AsHyperviser.Md) | Markdown |
-| 📄 | [02_HyperviserInInfotainment.Md](02_HyperviserInInfotainment.Md) | Markdown |
+| 📄 | [00_QNX.md](00_QNX.md) | Markdown |
+| 📄 | [01_AsHyperviser.md](01_AsHyperviser.md) | Markdown |
+| 📄 | [02_HyperviserInInfotainment.md](02_HyperviserInInfotainment.md) | Markdown |
 
 ---
 

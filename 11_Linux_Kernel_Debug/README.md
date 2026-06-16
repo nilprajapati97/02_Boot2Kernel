@@ -20,7 +20,7 @@
 
 | | File | Type |
 |:---:|:---|:---|
-| 📄 | [01_KernelDebug.Md](01_KernelDebug.Md) | Markdown |
+| 📄 | [01_KernelDebug.md](01_KernelDebug.md) | Markdown |
 
 ---
 

@@ -20,7 +20,7 @@
 
 | | File | Type |
 |:---:|:---|:---|
-| 📄 | [01_Final_EnvironmentVariables.Md](01_Final_EnvironmentVariables.Md) | Markdown |
+| 📄 | [01_Final_EnvironmentVariables.md](01_Final_EnvironmentVariables.md) | Markdown |
 
 ---
 

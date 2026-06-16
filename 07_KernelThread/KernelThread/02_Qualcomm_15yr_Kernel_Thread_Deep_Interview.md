@@ -954,4 +954,4 @@ int sensor_thread_init(struct sensor_thread *st)
 
 ---
 
-[← Previous: 01 — NVIDIA 15yr Deep](01_NVIDIA_15yr_Kernel_Thread_Deep_Interview.md) | [Next: 03 — Google 15yr Deep →](03_Google_15yr_Kernel_Thread_Deep_Interview.md) | [Back to Index →](../ReadMe.Md)
+[← Previous: 01 — NVIDIA 15yr Deep](01_NVIDIA_15yr_Kernel_Thread_Deep_Interview.md) | [Next: 03 — Google 15yr Deep →](03_Google_15yr_Kernel_Thread_Deep_Interview.md) | [Back to Index →](../README.md)

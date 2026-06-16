@@ -20,7 +20,7 @@
 
 | | File | Type |
 |:---:|:---|:---|
-| 📄 | [01_Von-Neumann_Harwad.Md](01_Von-Neumann_Harwad.Md) | Markdown |
+| 📄 | [01_Von-Neumann_Harwad.md](01_Von-Neumann_Harwad.md) | Markdown |
 | 📄 | [03_HardwordVSNon](03_HardwordVSNon) | File |
 
 ---

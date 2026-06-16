@@ -20,7 +20,7 @@
 
 | | File | Type |
 |:---:|:---|:---|
-| 📄 | [01_Yama.Md](01_Yama.Md) | Markdown |
+| 📄 | [01_Yama.md](01_Yama.md) | Markdown |
 
 ---
 

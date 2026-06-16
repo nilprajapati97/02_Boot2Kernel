@@ -20,7 +20,7 @@
 
 | | File | Type |
 |:---:|:---|:---|
-| 📄 | [01_Zephyr.Md](01_Zephyr.Md) | Markdown |
+| 📄 | [01_Zephyr.md](01_Zephyr.md) | Markdown |
 
 ---
 

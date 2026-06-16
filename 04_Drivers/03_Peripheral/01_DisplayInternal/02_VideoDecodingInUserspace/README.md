@@ -21,8 +21,8 @@
 | | File | Type |
 |:---:|:---|:---|
 | 📄 | [01_VideoDecodingUserspace.md](01_VideoDecodingUserspace.md) | Markdown |
-| 📄 | [02_DecodingInside.Md](02_DecodingInside.Md) | Markdown |
-| 📄 | [04_ VideoDecodingUserspace.Md](04_%20VideoDecodingUserspace.Md) | Markdown |
+| 📄 | [02_DecodingInside.md](02_DecodingInside.md) | Markdown |
+| 📄 | [04_ VideoDecodingUserspace.md](04_%20VideoDecodingUserspace.md) | Markdown |
 
 ---
 

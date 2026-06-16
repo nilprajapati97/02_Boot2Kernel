@@ -26,7 +26,7 @@
 
 | | File | Type |
 |:---:|:---|:---|
-| 📄 | [02_ProjectLifeCycle.Md](02_ProjectLifeCycle.Md) | Markdown |
+| 📄 | [02_ProjectLifeCycle.md](02_ProjectLifeCycle.md) | Markdown |
 
 ---
 

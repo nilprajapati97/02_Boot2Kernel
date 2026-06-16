@@ -20,17 +20,17 @@
 
 | | File | Type |
 |:---:|:---|:---|
-| 📄 | [00_SDM660BringUpAndroid.Md](00_SDM660BringUpAndroid.Md) | Markdown |
-| 📄 | [01_Pre-BootloaderSetup.Md](01_Pre-BootloaderSetup.Md) | Markdown |
-| 📄 | [02_BootLoaderBringUp.Md](02_BootLoaderBringUp.Md) | Markdown |
-| 📄 | [03_LinuxKernelBring-Up.Md](03_LinuxKernelBring-Up.Md) | Markdown |
-| 📄 | [03_LinuxKernelBring-UpLogs.Md](03_LinuxKernelBring-UpLogs.Md) | Markdown |
-| 📄 | [04_RootFileSystemBringUp.Md](04_RootFileSystemBringUp.Md) | Markdown |
-| 📄 | [05_PeripheralBringUp.Md](05_PeripheralBringUp.Md) | Markdown |
-| 📄 | [06_DebugAndValidation.Md](06_DebugAndValidation.Md) | Markdown |
-| 📄 | [07_SecurityAndProductPrepa.Md](07_SecurityAndProductPrepa.Md) | Markdown |
-| 📄 | [08_UpdateAndDeployment.Md](08_UpdateAndDeployment.Md) | Markdown |
-| 📄 | [09_AndroidBootupOnLinuxBoard.MD](09_AndroidBootupOnLinuxBoard.MD) | Markdown |
+| 📄 | [00_SDM660BringUpAndroid.md](00_SDM660BringUpAndroid.md) | Markdown |
+| 📄 | [01_Pre-BootloaderSetup.md](01_Pre-BootloaderSetup.md) | Markdown |
+| 📄 | [02_BootLoaderBringUp.md](02_BootLoaderBringUp.md) | Markdown |
+| 📄 | [03_LinuxKernelBring-Up.md](03_LinuxKernelBring-Up.md) | Markdown |
+| 📄 | [03_LinuxKernelBring-UpLogs.md](03_LinuxKernelBring-UpLogs.md) | Markdown |
+| 📄 | [04_RootFileSystemBringUp.md](04_RootFileSystemBringUp.md) | Markdown |
+| 📄 | [05_PeripheralBringUp.md](05_PeripheralBringUp.md) | Markdown |
+| 📄 | [06_DebugAndValidation.md](06_DebugAndValidation.md) | Markdown |
+| 📄 | [07_SecurityAndProductPrepa.md](07_SecurityAndProductPrepa.md) | Markdown |
+| 📄 | [08_UpdateAndDeployment.md](08_UpdateAndDeployment.md) | Markdown |
+| 📄 | [09_AndroidBootupOnLinuxBoard.md](09_AndroidBootupOnLinuxBoard.md) | Markdown |
 
 ---
 
