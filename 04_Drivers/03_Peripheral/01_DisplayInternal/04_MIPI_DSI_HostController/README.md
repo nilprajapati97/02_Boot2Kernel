@@ -20,7 +20,7 @@
 
 | | File | Type |
 |:---:|:---|:---|
-| 📄 | [04_00_FinalDisplyPixel.Md](04_00_FinalDisplyPixel.Md) | Markdown |
+| 📄 | [04_00_FinalDisplyPixel.md](04_00_FinalDisplyPixel.md) | Markdown |
 
 ---
 

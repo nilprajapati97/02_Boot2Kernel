@@ -20,9 +20,9 @@
 
 | | File | Type |
 |:---:|:---|:---|
-| 📄 | [00_BuldRoot.Md](00_BuldRoot.Md) | Markdown |
-| 📄 | [01_BlockDiagram.Md](01_BlockDiagram.Md) | Markdown |
-| 📄 | [03_RaspberyPie.Md](03_RaspberyPie.Md) | Markdown |
+| 📄 | [00_BuldRoot.md](00_BuldRoot.md) | Markdown |
+| 📄 | [01_BlockDiagram.md](01_BlockDiagram.md) | Markdown |
+| 📄 | [03_RaspberyPie.md](03_RaspberyPie.md) | Markdown |
 
 ---
 

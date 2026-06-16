@@ -23,7 +23,7 @@
 | 📄 | [01_Implement_I2C_Driver.md](01_Implement_I2C_Driver.md) | Markdown |
 | 📄 | [01_MyUARTDriver.md](01_MyUARTDriver.md) | Markdown |
 | 📄 | [02_Implement_I2C_Driver.md](02_Implement_I2C_Driver.md) | Markdown |
-| 📄 | [02_TempSensor.Md](02_TempSensor.Md) | Markdown |
+| 📄 | [02_TempSensor.md](02_TempSensor.md) | Markdown |
 | 📄 | [03_DebugI2CDriver.md](03_DebugI2CDriver.md) | Markdown |
 | 📄 | [04_ProbeNotWorkingI2C.md](04_ProbeNotWorkingI2C.md) | Markdown |
 

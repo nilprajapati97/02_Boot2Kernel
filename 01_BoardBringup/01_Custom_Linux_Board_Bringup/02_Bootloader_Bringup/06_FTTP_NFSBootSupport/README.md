@@ -20,7 +20,7 @@
 
 | | File | Type |
 |:---:|:---|:---|
-| 📄 | [01_Final_FTTP_NFS_BootSupport.Md](01_Final_FTTP_NFS_BootSupport.Md) | Markdown |
+| 📄 | [01_Final_FTTP_NFS_BootSupport.md](01_Final_FTTP_NFS_BootSupport.md) | Markdown |
 
 ---
 

@@ -21,10 +21,10 @@
 | | File | Type |
 |:---:|:---|:---|
 | 📄 | [00_Final_SPL_MLO_Porting.md](00_Final_SPL_MLO_Porting.md) | Markdown |
-| 📄 | [00_Malloc.Md](00_Malloc.Md) | Markdown |
-| 📄 | [01_SPL_MLO_Porting.Md](01_SPL_MLO_Porting.Md) | Markdown |
+| 📄 | [00_Malloc.md](00_Malloc.md) | Markdown |
+| 📄 | [01_SPL_MLO_Porting.md](01_SPL_MLO_Porting.md) | Markdown |
 | 📄 | [02_LinkerScript.md](02_LinkerScript.md) | Markdown |
-| 📄 | [03_MLO_Poring.Md](03_MLO_Poring.Md) | Markdown |
+| 📄 | [03_MLO_Poring.md](03_MLO_Poring.md) | Markdown |
 | 🖼️ | [SPL_MLO.png](SPL_MLO.png) | Image |
 
 ---

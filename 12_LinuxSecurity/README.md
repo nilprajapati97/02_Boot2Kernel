@@ -30,9 +30,9 @@
 
 | | File | Type |
 |:---:|:---|:---|
-| 📄 | [01_FriendSuggetion.Md](01_FriendSuggetion.Md) | Markdown |
-| 📄 | [01_Linux Security.Md](01_Linux%20Security.Md) | Markdown |
-| 📄 | [01_LinuxSecurity.Md](01_LinuxSecurity.Md) | Markdown |
+| 📄 | [01_FriendSuggetion.md](01_FriendSuggetion.md) | Markdown |
+| 📄 | [01_Linux Security.md](01_Linux%20Security.md) | Markdown |
+| 📄 | [01_LinuxSecurity.md](01_LinuxSecurity.md) | Markdown |
 
 ---
 

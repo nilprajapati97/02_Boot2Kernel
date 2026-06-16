@@ -20,7 +20,7 @@
 
 | | File | Type |
 |:---:|:---|:---|
-| 📄 | [01_SPIDriverDebug.Md](01_SPIDriverDebug.Md) | Markdown |
+| 📄 | [01_SPIDriverDebug.md](01_SPIDriverDebug.md) | Markdown |
 
 ---
 

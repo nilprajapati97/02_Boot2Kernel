@@ -20,8 +20,8 @@
 
 | | File | Type |
 |:---:|:---|:---|
-| 📄 | [01_AppArmor.Md](01_AppArmor.Md) | Markdown |
-| 📄 | [02_AppArmorPracticalExample.Md](02_AppArmorPracticalExample.Md) | Markdown |
+| 📄 | [01_AppArmor.md](01_AppArmor.md) | Markdown |
+| 📄 | [02_AppArmorPracticalExample.md](02_AppArmorPracticalExample.md) | Markdown |
 
 ---
 

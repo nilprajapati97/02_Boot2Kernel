@@ -20,7 +20,7 @@
 
 | | File | Type |
 |:---:|:---|:---|
-| 📄 | [01_Final_USBMassStorageMode.Md](01_Final_USBMassStorageMode.Md) | Markdown |
+| 📄 | [01_Final_USBMassStorageMode.md](01_Final_USBMassStorageMode.md) | Markdown |
 
 ---
 

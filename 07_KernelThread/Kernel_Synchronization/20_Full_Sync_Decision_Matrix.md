@@ -343,4 +343,4 @@ flowchart TD
 
 ---
 
-[← Previous: 19 — Synchronization in Interrupt Context](19_Sync_in_Interrupt_Context.md) | [Index: Kernel Synchronization](ReadMe.Md)
+[← Previous: 19 — Synchronization in Interrupt Context](19_Sync_in_Interrupt_Context.md) | [Index: Kernel Synchronization](README.md)

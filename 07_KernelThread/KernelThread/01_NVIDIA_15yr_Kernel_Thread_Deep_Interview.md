@@ -1019,4 +1019,4 @@ flowchart TD
 
 ---
 
-[Next: 02 — Qualcomm 15yr Deep →](02_Qualcomm_15yr_Kernel_Thread_Deep_Interview.md) | [Back to Index →](../ReadMe.Md)
+[Next: 02 — Qualcomm 15yr Deep →](02_Qualcomm_15yr_Kernel_Thread_Deep_Interview.md) | [Back to Index →](../README.md)

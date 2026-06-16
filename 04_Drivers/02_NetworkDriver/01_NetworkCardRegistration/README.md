@@ -20,7 +20,7 @@
 
 | | File | Type |
 |:---:|:---|:---|
-| 📄 | [00_NetworkCardRegistration.Md](00_NetworkCardRegistration.Md) | Markdown |
+| 📄 | [00_NetworkCardRegistration.md](00_NetworkCardRegistration.md) | Markdown |
 | 🖼️ | [00_NetworkCardRegistration.jpg](00_NetworkCardRegistration.jpg) | Image |
 | 🩹 | [00_NetworkCard_𝐑𝐞𝐠𝐢𝐬𝐭𝐫𝐚𝐭𝐢𝐨𝐧𝐩𝐫𝐨𝐜𝐞𝐬𝐬.patch](00_NetworkCard_𝐑𝐞𝐠𝐢𝐬𝐭𝐫𝐚𝐭𝐢𝐨𝐧𝐩𝐫𝐨𝐜𝐞𝐬𝐬.patch) | Patch |
 

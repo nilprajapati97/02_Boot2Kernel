@@ -20,8 +20,8 @@
 
 | | File | Type |
 |:---:|:---|:---|
-| 📄 | [00_Board_Bringup_Checklist.Md](00_Board_Bringup_Checklist.Md) | Markdown |
-| 📄 | [00_EmbeddedLinuxBring-up.Md](00_EmbeddedLinuxBring-up.Md) | Markdown |
+| 📄 | [00_Board_Bringup_Checklist.md](00_Board_Bringup_Checklist.md) | Markdown |
+| 📄 | [00_EmbeddedLinuxBring-up.md](00_EmbeddedLinuxBring-up.md) | Markdown |
 | 📄 | [01_BootMedia.md](01_BootMedia.md) | Markdown |
 | 📄 | [02_FlashUboot.md](02_FlashUboot.md) | Markdown |
 | 📄 | [03_ValidateDDR.md](03_ValidateDDR.md) | Markdown |

@@ -20,7 +20,7 @@
 
 | | File | Type |
 |:---:|:---|:---|
-| 📄 | [01_PeripheralDriver.Md](01_PeripheralDriver.Md) | Markdown |
+| 📄 | [01_PeripheralDriver.md](01_PeripheralDriver.md) | Markdown |
 | 📄 | [01_UARTSupportToNewBoard.md](01_UARTSupportToNewBoard.md) | Markdown |
 
 ---

@@ -21,7 +21,7 @@
 | | File | Type |
 |:---:|:---|:---|
 | 📄 | [00_RootFS.md](00_RootFS.md) | Markdown |
-| 📄 | [01_SampleInitramfsContents.Md](01_SampleInitramfsContents.Md) | Markdown |
+| 📄 | [01_SampleInitramfsContents.md](01_SampleInitramfsContents.md) | Markdown |
 
 ---
 

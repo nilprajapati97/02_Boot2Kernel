@@ -26,9 +26,9 @@
 
 | | File | Type |
 |:---:|:---|:---|
-| 📄 | [01_I2cImplementation.Md](01_I2cImplementation.Md) | Markdown |
-| 📄 | [02_MultipleI2C.Md](02_MultipleI2C.Md) | Markdown |
-| 📄 | [03_I2C_DriverAnlysis.Md](03_I2C_DriverAnlysis.Md) | Markdown |
+| 📄 | [01_I2cImplementation.md](01_I2cImplementation.md) | Markdown |
+| 📄 | [02_MultipleI2C.md](02_MultipleI2C.md) | Markdown |
+| 📄 | [03_I2C_DriverAnlysis.md](03_I2C_DriverAnlysis.md) | Markdown |
 | 📄 | [05_I2CDebug.md](05_I2CDebug.md) | Markdown |
 
 ---

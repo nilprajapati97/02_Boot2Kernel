@@ -20,9 +20,9 @@
 
 | | File | Type |
 |:---:|:---|:---|
-| 📄 | [00_UbootQuestions.Md](00_UbootQuestions.Md) | Markdown |
-| 📄 | [01_SPL DDR bring-up.Md](01_SPL%20DDR%20bring-up.Md) | Markdown |
-| 📄 | [03_DDR_Bringup_Logs.Md](03_DDR_Bringup_Logs.Md) | Markdown |
+| 📄 | [00_UbootQuestions.md](00_UbootQuestions.md) | Markdown |
+| 📄 | [01_SPL DDR bring-up.md](01_SPL%20DDR%20bring-up.md) | Markdown |
+| 📄 | [03_DDR_Bringup_Logs.md](03_DDR_Bringup_Logs.md) | Markdown |
 
 ---
 
