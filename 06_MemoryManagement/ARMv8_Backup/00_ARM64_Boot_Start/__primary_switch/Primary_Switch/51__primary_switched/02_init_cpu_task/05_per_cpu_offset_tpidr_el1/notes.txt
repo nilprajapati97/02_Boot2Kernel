@@ -1,0 +1,40 @@
+Per-CPU Offset — tpidr_el1
+===========================
+
+Instructions:
+  adr_l  x5, __per_cpu_offset        ; x5 = &__per_cpu_offset[0]
+  ldr    w6, [x4, #TSK_TI_CPU]       ; w6 = init_task.thread_info.cpu  (= 0 for boot CPU)
+  ldr    x5, [x5, x6, lsl #3]        ; x5 = __per_cpu_offset[cpu_id]
+  set_this_cpu_offset  x5            ; msr tpidr_el1, x5  (or tpidr_el2 for VHE)
+
+What is __per_cpu_offset?
+  - An array: u64 __per_cpu_offset[NR_CPUS]
+  - Each entry holds the base address of that CPU's per-cpu data section.
+  - __per_cpu_offset[0] is the boot CPU's per-cpu base.
+
+What is tpidr_el1?
+  - A system register: "Thread Pointer ID Register EL1"
+  - ARMv8 provides this as a fast, dedicated register for per-CPU base.
+  - No memory access needed to get the per-CPU base — just one register read.
+
+How per-cpu variable access works after this:
+  // C macro:  this_cpu_read(var)
+  // Assembly generated:
+      mrs   x0, tpidr_el1                 ; get per-cpu base
+      ldr   x0, [x0, #:per_cpu_offset:var] ; load var relative to base
+
+Memory layout:
+  Physical RAM:
+  ┌─────────────────────────────┐
+  │ CPU0 per-cpu section        │ ← __per_cpu_offset[0] points here
+  ├─────────────────────────────┤
+  │ CPU1 per-cpu section        │ ← __per_cpu_offset[1] points here
+  ├─────────────────────────────┤
+  │ ...                         │
+  └─────────────────────────────┘
+
+TSK_TI_CPU:
+  = offsetof(struct task_struct, thread_info.cpu)
+  = CPU ID the task is currently running on (0 for boot CPU)
+
+lsl #3 = multiply by 8 (sizeof u64) to index the array.

@@ -1,0 +1,33 @@
+PHASE OVERVIEW (DEEP FROM SCRATCH)
+
+Phase: 02
+Primary purpose: Boot arguments, topology identity, and per-CPU physical/logical layout formation
+
+From-scratch explanation:
+- This phase groups calls that must be completed together before the next boot capability level is safe.
+- Think of this as a contract boundary: once complete, the kernel is allowed to assume additional capabilities.
+
+Detailed goals:
+1) Stabilize the exact invariants needed for immediate successor calls.
+2) Avoid exposing partially initialized global state to asynchronous paths.
+3) Prepare predictable failure diagnostics if bring-up fails in this region.
+
+Call sequence in this phase:
+- 15. setup_boot_config
+- 16. setup_command_line
+- 17. setup_nr_cpu_ids
+- 18. setup_per_cpu_areas
+- 19. smp_prepare_boot_cpu
+- 20. early_numa_node_init
+- 21. boot_cpu_hotplug_init
+- 22. parse_early_param
+- 23. print_unknown_bootoptions
+- 24. random_init_early
+- 25. setup_log_buf
+- 26. vfs_caches_init_early
+- 27. sort_main_extable
+
+Interview focus for this phase:
+- Explain why these calls are grouped and ordered this way.
+- Name one likely failure if one early call is delayed or removed.
+- Describe one signal you would inspect in logs/trace to validate correctness.

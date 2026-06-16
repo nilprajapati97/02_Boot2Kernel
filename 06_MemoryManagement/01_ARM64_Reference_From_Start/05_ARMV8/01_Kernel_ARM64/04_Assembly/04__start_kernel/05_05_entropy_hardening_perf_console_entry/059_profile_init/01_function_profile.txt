@@ -1,0 +1,55 @@
+FUNCTION PROFILE (DEEP FROM SCRATCH)
+
+Function name:
+- profile_init
+
+Position in global start_kernel call sequence:
+- 59 of 104
+
+Phase:
+- 05
+
+Likely source hint:
+- Not quickly resolved by ripgrep; inspect with rg -n function_name\\s*\\(
+
+Beginner explanation (from scratch):
+- In kernel boot, each call is a contract step. profile_init is one contract step in that chain.
+- The system cannot safely "skip ahead" because later functions assume this step completed.
+
+What problem this function solves at boot time:
+- It advances kernel state from "partially prepared" to "more reliable for next subsystem actions".
+- It reduces uncertainty in one subsystem area (CPU/memory/time/security/process/control-plane depending on context).
+
+Preconditions (what should already be true):
+- Previous call in sequence: perf_event_init
+- Core bootstrap context remains under controlled ordering and expected interrupt-state constraints.
+
+Postconditions (what becomes newly safe):
+- Next call in sequence can rely on stronger invariants.
+- One more boot dependency edge is satisfied.
+
+Why this exact order position matters:
+- If moved later, consumers may run with missing invariants.
+- If moved earlier than prerequisites, it may execute against unstable dependencies.
+
+Failure modes if this stage is wrong:
+- Hard failures: panic, hang, boot loop.
+- Soft failures: delayed instability, policy gaps, latent corruption.
+- Observability clue: failure typically appears near boundary where next subsystem first uses this invariant.
+
+How to debug around this function:
+1) Confirm entry/exit evidence in boot logs or trace.
+2) Validate expected interrupt state for this region.
+3) Check immediate successor behavior: call_function_init
+4) Correlate with subsystem-specific diagnostics (lockdep, tracepoints, initcall debug, early console output).
+
+Interview answer template (high-bar):
+- "profile_init is called at step 59 to establish invariant X used by call_function_init."
+- "Its ordering is constrained by prerequisite perf_event_init and successor dependency call_function_init."
+- "If misordered, failure class is typically Y; I would validate using Z diagnostics."
+
+Expansion prompts for self-study:
+- Read implementation and identify concrete structs touched.
+- Map exact side effects (global vars, caches, hooks, timers, task state).
+- Record one real bug pattern seen when this class of init is misordered.
+

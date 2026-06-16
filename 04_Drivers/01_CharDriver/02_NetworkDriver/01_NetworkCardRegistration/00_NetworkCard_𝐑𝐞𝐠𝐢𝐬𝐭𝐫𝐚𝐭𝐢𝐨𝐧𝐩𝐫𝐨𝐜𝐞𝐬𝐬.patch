@@ -1,0 +1,94 @@
+𝐇𝐨𝐰 𝐋𝐢𝐧𝐮𝐱 𝐃𝐢𝐬𝐜𝐨𝐯𝐞𝐫𝐬 𝐘𝐨𝐮𝐫 𝐍𝐞𝐭𝐰𝐨𝐫𝐤 𝐂𝐚𝐫𝐝 𝐞1000 𝐃𝐫𝐢𝐯𝐞𝐫 𝐑𝐞𝐠𝐢𝐬𝐭𝐫𝐚𝐭𝐢𝐨𝐧 𝐩𝐫𝐨𝐜𝐞𝐬𝐬. When you run insmod e1000.ko, a chain of events unfolds across hardware, firmware, and kernel layers.
+
+LAYER 1: BIOS ENUMERATION (Power-On)
+
+The BIOS scans every possible PCI address (256 buses × 32 devices × 8 functions) looking for devices.
+
+For the Intel 82540EM at Bus 0, Device 3, Function 0:
+- Writes 0xFFFFFFFF to BAR0, reads back 0xFFFE0000
+- Size calculation: ~(0xFFFE0000) + 1 = 0x20000 (128 KB)
+- Assigns: 0xf0200000, IRQ: 9
+
+The NIC now responds to memory accesses at 0xf0200000–0xf021FFFF.
+
+LAYER 2: KERNEL BOOT
+
+Linux re-scans the entire bus via pci_scan_root_bus(). For each device, kernel creates struct pci_dev:
+
+pci_dev {
+ .vendor = 0x8086,  // Intel
+ .device = 0x100E,  // 82540EM
+ .devfn  = 0x18,  // (dev=3 << 3) | (func=0)
+ .irq  = 9,   // From BIOS
+ .resource[0] = {
+ .start = 0xf0200000, // BAR0 start
+ .end = 0xf021ffff, // BAR0 end (128KB)
+ .flags = IORESOURCE_MEM,
+ },
+ .driver = NULL,  // ← NO DRIVER YET
+}
+
+LAYER 3: DRIVER REGISTRATION
+
+The e1000 driver contains an ID match table:
+
+pci_device_id e1000_pci_tbl[] = {
+ ...
+ { PCI_VDEVICE(INTEL, 0x100E), board_82540 }, ← THIS ONE
+ // ... 80+
+ { 0, }
+
+When insmod e1000.ko executes:
+
+e1000_init_module()
+ └─ pci_register_driver(&e1000_driver)
+  └─ driver_register()
+   └─ For each pci_dev in global list:
+     pci_bus_match(dev, &e1000_driver)
+
+LAYER 4: THE MATCH
+
+The kernel walked through e1000_pci_tbl[], comparing each entry against the discovered device. When it hit entry with vendor=0x8086 & device=0x100E → MATCH!
+
+Now e1000_probe() callback fires.
+
+LAYER 5: INSIDE e1000_probe()
+
+STEP 1: Enable Device Memory Access
+
+bars=0x5 = binary 0b101 = BARs 0 and 2
+- BAR0: 128KB MMIO register space
+- BAR2: I/O port fallback
+
+Device powered to D0, INTX_DISABLE bit cleared.
+
+STEP 2: Set Bus Master - THE CRITICAL BIT FLIP
+
+This single bit grants DMA permission. Without it: NIC can only respond to CPU-initiated reads/writes, cannot initiate DMA autonomously, packets stuck, interface dead.
+
+With bit 2 set, the NIC becomes a bus master & can autonomously read TX descriptors from RAM, DMA packet data, write RX descriptors, & DMA received packets directly to RAM.
+
+STEP 3: Map Hardware Registers
+Virtual 0xffffc9000021FFFF → Physical 0xf0200000–0xf021FFFF
+
+STEP 4: Allocate Network Device
+STEP 5: Hardware Reset & MAC Address
+STEP 6: Register with Network Stack
+
+VERIFICATION
+
+$ lspci -xxx -s 00:03.0
+00: 86 80 0e ...
+10: 00 00 20 f0 00 00 ..
+
+ BAR0 = 0xf0200000 (little-endian)
+
+Driver binding confirmed:
+$ cat /sys/bus/pci/devices/0000:00:03.0/driver
+../../drivers/e1000 ← NOW BOUND ✓
+
+When you run ip link set enp0s3 up, the kernel calls e1000_open(): allocates TX/RX rings (DMA memory), writes ring addresses to NIC registers, registers interrupt handler, enables interrupts, starts packet flow.
+
+For more deatils check Kernel Foundation - Master Linux Kernel & LDD
+
+#e1000 #DMA #MMIO

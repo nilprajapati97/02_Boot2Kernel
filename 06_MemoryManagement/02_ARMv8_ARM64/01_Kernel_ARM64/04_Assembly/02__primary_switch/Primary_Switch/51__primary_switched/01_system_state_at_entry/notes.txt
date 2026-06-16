@@ -1,0 +1,30 @@
+System State at Entry to __primary_switched
+============================================
+
+MMU Status:
+  - SCTLR_EL1.M = 1  → MMU is ON
+  - TTBR0_EL1 → identity map  (physical ≈ virtual, low addresses)
+  - TTBR1_EL1 → kernel page tables (virtual 0xFFFFFF80_XXXXXXXX)
+
+PC Location:
+  - Before br x8  : 0x40080XXX  (physical / identity map, TTBR0 range)
+  - After  br x8  : 0xFFFFFF80_1XXXXXXX  (kernel virtual, TTBR1 range)
+  - __primary_switched lives in .text (not .idmap.text)
+    so it is ONLY accessible via TTBR1 kernel mapping
+
+Register State on Entry:
+  x0  = __pa(KERNEL_START)   physical address of kernel image start
+  x20 = cpu_boot_mode        BOOT_CPU_MODE_EL1 or BOOT_CPU_MODE_EL2
+  x21 = FDT blob physical address (carried from primary_entry)
+  x29 = 0 (xzr, set in __primary_switch before br x8)
+  x30 = return address to __primary_switch (never used — start_kernel never returns)
+  SP  = early_init_stack (temporary boot stack, set in __primary_switch)
+
+Cache State:
+  - I-cache: ON
+  - D-cache: ON (enabled as part of MMU enable in __enable_mmu)
+  - TLBs: populated for identity map and kernel virtual map
+
+Exception Level:
+  - Running at EL1 (or EL2 if VHE)
+  - VBAR_EL1 = 0 (garbage) until msr vbar_el1 below — no safe exception handling yet

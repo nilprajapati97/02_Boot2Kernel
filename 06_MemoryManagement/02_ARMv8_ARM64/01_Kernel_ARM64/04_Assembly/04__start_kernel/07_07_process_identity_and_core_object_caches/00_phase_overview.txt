@@ -1,0 +1,33 @@
+PHASE OVERVIEW (DEEP FROM SCRATCH)
+
+Phase: 07
+Primary purpose: Process identity internals, credentials, core object caches, and namespace/security building blocks
+
+From-scratch explanation:
+- This phase groups calls that must be completed together before the next boot capability level is safe.
+- Think of this as a contract boundary: once complete, the kernel is allowed to assume additional capabilities.
+
+Detailed goals:
+1) Stabilize the exact invariants needed for immediate successor calls.
+2) Avoid exposing partially initialized global state to asynchronous paths.
+3) Prepare predictable failure diagnostics if bring-up fails in this region.
+
+Call sequence in this phase:
+- 77. anon_vma_init
+- 78. thread_stack_cache_init
+- 79. cred_init
+- 80. fork_init
+- 81. proc_caches_init
+- 82. uts_ns_init
+- 83. time_ns_init
+- 84. key_init
+- 85. security_init
+- 86. dbg_late_init
+- 87. net_ns_init
+- 88. vfs_caches_init
+- 89. pagecache_init
+
+Interview focus for this phase:
+- Explain why these calls are grouped and ordered this way.
+- Name one likely failure if one early call is delayed or removed.
+- Describe one signal you would inspect in logs/trace to validate correctness.

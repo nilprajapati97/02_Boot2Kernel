@@ -1,0 +1,49 @@
+Virtual Address minus Physical Address
+=======================================
+
+Instruction breakdown:
+
+  adrp  x4, _text
+  ─────────────────────────────────────────────────────────
+  - adrp = "Address of Page, PC-relative"
+  - PC is now in kernel VIRTUAL address space (TTBR1 active)
+  - PC ≈ 0xFFFFFF80_1XXXXXXX
+  - adrp gives: PAGE_ALIGN(PC) + page_offset_of(_text)
+  - Result: x4 = VIRTUAL address of _text (kernel .text section start)
+  - Example: x4 = 0xFFFFFF80_10080000
+
+  sub   x4, x4, x0
+  ─────────────────────────────────────────────────────────
+  - x0 = __pa(KERNEL_START) = physical address
+  - This was computed in __primary_switch using:
+      adrp x0, KERNEL_START
+    where PC was still in identity-mapped physical space (TTBR0 active)
+  - So x0 = 0x40080000 (example physical address)
+
+  Result:
+  x4 = 0xFFFFFF80_10080000   (virtual)
+     - 0x00000000_40080000   (physical)
+     ─────────────────────────────────
+     = 0xFFFFFF7F_D0000000   (kimage_voffset)
+
+  str_l x4, kimage_voffset, x5
+  ─────────────────────────────────────────────────────────
+  - Stores this offset into the global variable kimage_voffset
+  - Declared in arch/arm64/mm/mmu.c:
+      u64 kimage_voffset __ro_after_init;
+  - __ro_after_init: writable during init, read-only after
+
+How it's used in the kernel:
+  // include/asm/memory.h
+  #define __kimg_to_phys(addr)   ((addr) - kimage_voffset)
+  #define __phys_to_kimg(x)      ((unsigned long)((x) + kimage_voffset))
+
+  // virt_to_phys ultimately uses this:
+  static inline phys_addr_t __virt_to_phys(unsigned long x) {
+      return (phys_addr_t)(x - kimage_voffset);
+  }
+
+Example conversion:
+  phys_to_virt(0x40080000)
+    = 0x40080000 + 0xFFFFFF7F_D0000000
+    = 0xFFFFFF80_10080000  ← virtual address

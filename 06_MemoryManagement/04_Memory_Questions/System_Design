@@ -1,0 +1,170 @@
+
+---
+
+# 🧠 Core Kernel & OS Design
+
+### 1.
+
+Design a **Linux process scheduler** optimized for GPU-heavy workloads.
+
+### 2.
+
+Design a **virtual memory management system** (paging, swapping, NUMA awareness).
+
+### 3.
+
+Design a **high-performance interrupt handling subsystem**.
+
+### 4.
+
+Design a **kernel module system** with safe dynamic loading/unloading.
+
+### 5.
+
+Design a **lock-free data structure** for kernel usage (e.g., queue for IO).
+
+---
+
+# ⚡ Concurrency & Synchronization
+
+### 6.
+
+Design a **scalable locking mechanism** (spinlocks vs mutex vs RCU).
+
+### 7.
+
+Design a **read-copy-update (RCU) system** from scratch.
+
+### 8.
+
+Design a **multi-core task scheduling system** with load balancing.
+
+### 9.
+
+Design a **deadlock detection & prevention system** inside kernel.
+
+### 10.
+
+Design a **thread-safe memory allocator** (like slab/slub allocator).
+
+---
+
+# 💾 Memory & Storage Systems
+
+### 11.
+
+Design a **page cache system** for Linux.
+
+### 12.
+
+Design a **zero-copy data transfer mechanism**.
+
+### 13.
+
+Design a **high-performance filesystem** (like ext4/xfs-lite).
+
+### 14.
+
+Design a **block IO scheduler** for SSD + GPU workloads.
+
+### 15.
+
+Design a **DMA-based memory transfer system**.
+
+---
+
+# 🖥️ Device Drivers & Hardware Interaction
+
+### 16.
+
+Design a **GPU device driver architecture** (user space + kernel space interaction).
+
+### 17.
+
+Design a **PCIe device communication framework**.
+
+### 18.
+
+Design a **power management system** for GPU devices.
+
+### 19.
+
+Design a **high-throughput network driver**.
+
+### 20.
+
+Design a **kernel-level logging and tracing system**.
+
+---
+
+# 🚀 Performance & Optimization
+
+### 21.
+
+Design a **kernel profiling system** (like perf/eBPF-lite).
+
+### 22.
+
+Design a **low-latency system for real-time workloads**.
+
+### 23.
+
+Design a system to **minimize context switching overhead**.
+
+### 24.
+
+Design a **NUMA-aware resource allocator**.
+
+### 25.
+
+Design a **high-throughput IPC mechanism** (shared memory, pipes, etc.).
+
+---
+
+# 🎯 What NVIDIA Typically Expects
+
+For a **10+ years candidate**, they’re not looking for textbook answers. They expect:
+
+* Trade-offs (latency vs throughput)
+* Cache-line awareness
+* False sharing avoidance
+* Lock contention strategies
+* Hardware-aware decisions (GPU, PCIe, DMA)
+* Failure modes & debugging
+* Real kernel examples (Linux internals)
+
+---
+
+# 🧩 Example Deep-Dive (How You Should Answer)
+
+If asked:
+
+👉 *Design a GPU driver*
+
+You should cover:
+
+* User space ↔ kernel interface (ioctl, mmap)
+* Command submission queues
+* Memory mapping (VRAM vs system RAM)
+* DMA engines
+* Interrupt handling
+* Synchronization (fences, semaphores)
+* Scheduling across GPU cores
+* Error handling (GPU reset paths)
+
+---
+
+# 📌 Pro Tip
+
+If you want to stand out:
+
+* Reference real Linux subsystems:
+
+  * CFS scheduler
+  * SLUB allocator
+  * io_uring
+  * eBPF
+* Talk about **why Linux does something**, not just what
+
+---
+

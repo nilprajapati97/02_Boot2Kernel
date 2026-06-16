@@ -1,0 +1,175 @@
+﻿# Why Operation Order Inside `init_cpu_task` Matters
+
+## The Internal Dependency Graph
+
+The 5 operations inside `init_cpu_task` also have a specific required order:
+
+```
+[OP 1] msr sp_el0, tsk
+    │
+    │ Reason: scs_load_current (OP 4) reads sp_el0 via mrs to get &init_task
+    │         It MUST read the JUST-SET sp_el0, not garbage
+    │
+    ▼
+[OP 2] stack switch
+    │
+    │ Reason: [OP 3] frame sentinel writes to [sp + S_STACKFRAME]
+    │         sp must be the new stack (init_stack), not early_init_stack
+    │         Writing the sentinel to early_init_stack would be wrong and harmless
+    │         BUT x29 would point into early_init_stack, not init_stack
+    │
+    ▼
+[OP 3] frame sentinel (writes to [sp, #S_STACKFRAME] + sets x29)
+    │
+    │ No ordering constraint relative to OP 4 or OP 5
+    │ (OP 3 uses sp which is set in OP 2; OP 4 uses sp_el0 set in OP 1)
+    │
+    ▼
+[OP 4] scs_load_current
+    │
+    │ Uses sp_el0 (set in OP 1) to find init_task
+    │ Must come AFTER OP 1
+    │
+    ▼
+[OP 5] per-CPU offset
+    │
+    │ Uses tsk register (x4 = &init_task) to read thread_info.cpu
+    │ Independent of OP 3 and OP 4
+    │ Must come before VBAR install (VBAR needs valid tpidr_el1 for per-CPU vars
+    │ in exception handlers)
+    ▼
+MACRO ENDS
+```
+
+---
+
+## Critical Ordering Rule: OP1 Before OP4
+
+`scs_load_current` macro:
+```asm
+.macro scs_load_current
+    get_current_task  x18         // mrs x18, sp_el0
+    ldr  x18, [x18, #TSK_TI_SCS_SP]
+.endm
+```
+
+If OP4 ran BEFORE OP1 (`msr sp_el0, tsk`), then `mrs x18, sp_el0` would get
+the OLD (garbage) value of `sp_el0`. The subsequent `ldr x18, [x18, ...]` would
+dereference a garbage pointer → translation fault → hang.
+
+**The fix is trivial:** OP1 must come before OP4. The current ordering enforces this.
+
+---
+
+## Critical Ordering Rule: OP2 Before OP3
+
+`stp xzr, xzr, [sp, #S_STACKFRAME]` writes to the NEW stack.
+`add x29, sp, #S_STACKFRAME` sets x29 relative to the NEW stack pointer.
+
+If OP3 ran before OP2:
+```
+sp still = early_init_stack + THREAD_SIZE (top of temporary stack)
+stp xzr, xzr, [sp, #S_STACKFRAME]  → writes sentinel at early_init_stack + offset
+add x29, sp, #S_STACKFRAME          → x29 = early_init_stack + S_STACKFRAME
+```
+
+Result: the final frame sentinel is in `early_init_stack`, not in `init_stack`.
+When the stack unwinder walks from `init_stack` frames back toward the final frame,
+it would not find the `FRAME_META_TYPE_FINAL` marker in `init_stack`'s pt_regs —
+it would walk off the end of the stack → page fault.
+
+---
+
+## What Happens If You Add Any C Call Inside The Macro
+
+Adding a C call inside `init_cpu_task` between OP2 and OP3 would be dangerous:
+
+```asm
+// HYPOTHETICAL BROKEN VERSION:
+msr   sp_el0, tsk                    // OP1 — sp_el0 set
+ldr   tmp1, [tsk, #TSK_STACK]        // OP2a — stack base
+add   sp, tmp1, #THREAD_SIZE         // OP2b — sp = stack top
+sub   sp, sp, #PT_REGS_SIZE          // OP2c — reserve pt_regs
+
+bl    some_c_function                // HYPOTHETICAL: BL before OP3/OP4/OP5
+
+stp   xzr, xzr, [sp, #S_STACKFRAME] // OP3 — frame sentinel
+...
+```
+
+**Problem:** `bl some_c_function` pushes a return address onto the stack and
+calls into C. The C function:
+1. Is KASAN-instrumented — accesses shadow memory — KASAN not yet initialized
+2. Calls `this_cpu_read()` — uses `tpidr_el1` — NOT YET SET (OP5 hasn't run)
+3. Calls `current` — `sp_el0` is set (OP1 ran) — OK
+4. May read `x18` as SCS check — x18 = garbage (OP4 hasn't run)
+
+This is why `init_cpu_task` contains ONLY raw assembly — no C function calls.
+
+---
+
+## Why `adr_l x4, init_task` Comes BEFORE The Macro Call
+
+```asm
+adr_l   x4, init_task     // OUTSIDE macro
+init_cpu_task x4, x5, x6  // INSIDE macro starts with: msr sp_el0, \tsk
+```
+
+`adr_l` is a PC-relative address computation. It generates `init_task`'s VIRTUAL
+address based on the current PC (which is in kernel virtual space, TTBR1 range).
+
+This must happen OUTSIDE the macro and stored in a register (x4) because:
+1. `adr_l` is a pseudo-instruction that expands to `adrp + add` — it uses a temporary
+   register internally. The macro's `tmp1` and `tmp2` parameters (x5, x6) could
+   be clobbered inside the macro before we need the init_task address.
+2. By putting `adr_l` outside, we guarantee x4 has the address before the macro begins.
+
+---
+
+## The `task_struct` Fields Accessed by `init_cpu_task`
+
+```c
+struct task_struct {
+    // ...
+    void *stack;                    // TSK_STACK offset — used in OP2
+    // ...
+    struct thread_info thread_info; // embedded at fixed offset
+};
+
+struct thread_info {
+    unsigned long flags;
+    u64 ttbr0;
+    union {
+        u64 preempt_count;
+        struct { ... };
+    };
+    u32 cpu;                // TSK_TI_CPU offset — used in OP5 (CPU ID)
+    // ...
+#ifdef CONFIG_SHADOW_CALL_STACK
+    void *scs_base;
+    void *scs_sp;           // TSK_TI_SCS_SP offset — used in OP4
+#endif
+};
+```
+
+All offsets (`TSK_STACK`, `TSK_TI_CPU`, `TSK_TI_SCS_SP`) are compile-time constants
+generated by `arch/arm64/kernel/asm-offsets.c` using `DEFINE()` macros.
+They appear in `arch/arm64/include/generated/asm-offsets.h` after the kernel build.
+
+---
+
+## ARMv8 CPU / Kernel / Memory Context
+
+### CPU Perspective (ARMv8-A)
+In ARMv8-A, the current task (process) is identified at EL0 via TPIDR_EL0 (user thread ID) and at EL1 via SP_EL0. Linux uses SP_EL0 to store the pointer to the current task_struct. SP_EL0 is a dedicated register (not the EL0 stack pointer when running in EL1 -- at EL1, SP_ELx selects either SP_EL0 or SP_EL1 as the active stack, controlled by PSTATE.SP). When the kernel uses SP_EL0 to store the current task pointer, it is using SP_EL0 as a general-purpose register (reading/writing it with MRS/MSR SP_EL0).
+
+### Kernel Perspective (Linux ARM64)
+init_cpu_task is a per-CPU variable (or boot-time initialization) that sets up the idle task (init_task / swapper) as the current task. In __primary_switched:
+  msr  sp_el0, x23        // x23 holds init_task VA, set SP_EL0 = &init_task
+  ldr  x8, [x23, #TSK_TI_CPU]  // verify .cpu field
+The current macro in Linux ARM64 expands to:
+  mrs x0, sp_el0          // read SP_EL0 as current task_struct pointer
+SP_EL0 is never spilled to the stack (it is a system register), making current() essentially a zero-cost operation.
+
+### Memory Perspective (ARMv8 Memory Model)
+task_struct for init_task lives in the .data section of the kernel image (statically allocated). Its VA is in the kernel text/data mapping (TTBR1_EL1). When SP_EL0 is set to &init_task, the memory region is already mapped and accessible. The task's stack (thread_union) is in the .init.data section and is also already mapped. After start_kernel -> sched_init(), all subsequent tasks have their task_struct allocated from slab memory in the kernel heap (also in the TTBR1_EL1 region).

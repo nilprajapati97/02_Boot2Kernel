@@ -1,0 +1,42 @@
+KASAN Early Init
+=================
+
+Conditional compilation:
+  #if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)
+      bl    kasan_early_init
+  #endif
+
+What is KASAN?
+  KASAN = Kernel Address SANitizer
+  A dynamic memory error detector built into the kernel.
+  Detects: use-after-free, out-of-bounds, use-before-init, etc.
+
+Two variants covered here:
+  CONFIG_KASAN_GENERIC   — software, uses compiler instrumentation
+  CONFIG_KASAN_SW_TAGS   — software with memory tagging (less overhead)
+  (CONFIG_KASAN_HW_TAGS  — uses ARM MTE hardware, does NOT need early init)
+
+What kasan_early_init() does:
+  - Maps the KASAN shadow memory region into the kernel page tables.
+  - Shadow memory = 1/8 of total kernel virtual address space.
+    For every 8 bytes of kernel memory, 1 shadow byte tracks its state.
+
+Memory impact:
+  Kernel VA space layout with KASAN:
+  ┌────────────────────────────────────────┐ 0xFFFFFF80_00000000
+  │  KASAN shadow region  (1/8 of VA)      │ ← kasan_early_init maps this
+  ├────────────────────────────────────────┤
+  │  Kernel image (.text, .data, .bss)     │
+  ├────────────────────────────────────────┤
+  │  vmalloc / modules / etc.              │
+  └────────────────────────────────────────┘ 0xFFFFFFFF_FFFFFFFF
+
+Why must this happen before C code (start_kernel)?
+  - KASAN instruments ALL memory accesses at compile time.
+  - The very first C function called will access KASAN shadow memory.
+  - If shadow memory is not mapped, the first instrumented access causes
+    a page fault → crash before the kernel even starts.
+
+Performance note:
+  KASAN adds ~2x memory overhead and ~2-3x runtime overhead.
+  Only used in debug/development kernels, NOT in production.

@@ -1,0 +1,35 @@
+START HERE: DEEP FROM-SCRATCH WALKTHROUGH FOR start_kernel
+
+Audience:
+- Learner moving from C basics to Linux kernel boot internals.
+- Interview preparation for high-bar systems roles (NVIDIA / Google / Qualcomm style depth).
+
+What start_kernel fundamentally is:
+- It is the architecture-independent boot orchestrator that converts a fragile, single-flow startup state into a stable kernel runtime substrate.
+- It does not "do one thing"; it enforces ordering invariants across many subsystems with strict dependency edges.
+
+How to consume this package deeply:
+1) Open 01_start_kernel_full_call_order.txt and read the full call order once without skipping.
+2) For each phase folder in numeric order, read:
+   - 00_phase_overview.txt
+   - 01_phase_dependency_and_failure_modes.txt
+3) For every function folder in that phase, read:
+   - 01_function_profile.txt
+   - 02_interview_questions.txt
+4) While reading, ask three questions repeatedly:
+   - What invariant is created here?
+   - Which later call depends on this invariant?
+   - What failure class appears if this ordering edge breaks?
+
+Boot mental model (from scratch):
+- Stage A: minimal CPU + architecture state
+- Stage B: memory and scheduler foundations
+- Stage C: interrupt/time/RCU asynchronous correctness
+- Stage D: identity/security/filesystem/control surfaces
+- Stage E: handoff to long-lived runtime threads
+
+Interview framing shortcut:
+- Purpose -> Ordering dependency -> Failure mode -> Debug strategy.
+
+Important caution:
+- Kernel boot defects are often sequencing defects, not isolated code bugs. Always reason in dependency chains.

@@ -1,0 +1,73 @@
+=========================================
+  Custom Slab Cache Module Demo
+  (Simulated Output)
+=========================================
+
+Module built successfully for x86-64:
+  File: custom_slab.ko
+  Type: ELF 64-bit LSB relocatable
+
+=========================================
+  Expected Output When Running in QEMU
+=========================================
+
+$ insmod /modules/custom_slab.ko
+
+=== Kernel Messages (dmesg) ===
+[    5.123456] Creating custom slab cache
+[    5.123789] Constructor called for object at ffff888003a12000
+[    5.123790] Constructor called for object at ffff888003a12040
+[    5.123791] Constructor called for object at ffff888003a12080
+[    5.124012] Cache created successfully
+[    5.124234] Allocated obj1: id=1, name=Object-1
+[    5.124456] Allocated obj2: id=2, name=Object-2
+[    5.124678] Allocated obj3: id=3, name=Object-3
+[    5.124890] Objects freed back to cache
+
+=== /proc/slabinfo Entry ===
+# name            <active_objs> <num_objs> <objsize> <objperslab> <pagesperslab>
+my_cache                3          3         64         3             1
+
+$ rmmod custom_slab
+
+=== Module Unload Messages ===
+[    6.234567] Cache destroyed
+
+=========================================
+  Module Analysis
+=========================================
+
+✓ Custom slab cache 'my_cache' created
+✓ Constructor called for each object allocation
+✓ 3 objects allocated successfully
+✓ Objects initialized with id and name
+✓ Objects freed back to cache
+✓ Cache visible in /proc/slabinfo
+✓ Cache destroyed on module unload
+
+Object Structure:
+  - int id
+  - char name[32]
+  - unsigned long timestamp
+  - void *data
+  Total size: 64 bytes (aligned)
+
+Cache Properties:
+  - SLAB_HWCACHE_ALIGN: Objects aligned to cache line
+  - SLAB_POISON: Memory poisoned for debugging
+  - Constructor: Initializes objects on allocation
+
+=========================================
+  To Run in QEMU ARM64
+=========================================
+
+Full setup (takes 30-60 minutes):
+  ./quick_start.sh
+
+Or step by step:
+  1. ./setup_qemu.sh      # Setup environment
+  2. ./build_module.sh    # Build for ARM64
+  3. ./create_rootfs.sh   # Create filesystem
+  4. ./run_qemu.sh        # Boot and test
+
+=========================================

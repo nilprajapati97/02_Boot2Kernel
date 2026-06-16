@@ -1,0 +1,37 @@
+Kernel Stack Setup
+==================
+
+Instructions:
+  ldr   x5, [x4, #TSK_STACK]    ; x5 = init_task.stack  (stack base)
+  add   sp, x5, #THREAD_SIZE    ; sp = stack base + 16KB  (top of stack)
+  sub   sp, sp, #PT_REGS_SIZE   ; sp = top - 336 bytes   (reserve pt_regs)
+
+Key Constants:
+  TSK_STACK     = offsetof(struct task_struct, stack)
+                = compile-time constant from asm-offsets.c
+  THREAD_SIZE   = 1 << THREAD_SHIFT  = 16384 (16KB) on typical ARM64
+  PT_REGS_SIZE  = sizeof(struct pt_regs) = 336 bytes
+
+Memory Layout of init_stack (16KB block in .bss):
+
+  HIGH ADDRESS
+  ┌───────────────────────────────────┐  ← init_task.stack + THREAD_SIZE
+  │  pt_regs  (336 bytes reserved)    │  ← SP after sub
+  │    ├── stackframe (fp=0, lr=0)    │
+  │    ├── stackframe_type = FINAL    │
+  │    └── x0..x30, sp, pc, pstate   │
+  ├───────────────────────────────────┤  ← SP (stack pointer set here)
+  │                                   │
+  │   Free kernel stack space         │
+  │   (grows downward from SP)        │
+  │                                   │
+  ├───────────────────────────────────┤
+  │  thread_info (at stack bottom)    │
+  └───────────────────────────────────┘  ← init_task.stack  (LOW ADDRESS)
+
+Why reserve pt_regs at the TOP?
+  - Every kernel task has pt_regs at the top of its stack.
+  - The stack unwinder uses this to detect the "bottom" of any task's stack.
+  - Consistent with all user tasks and kthreads.
+
+Stack direction: grows DOWN (high → low addresses).

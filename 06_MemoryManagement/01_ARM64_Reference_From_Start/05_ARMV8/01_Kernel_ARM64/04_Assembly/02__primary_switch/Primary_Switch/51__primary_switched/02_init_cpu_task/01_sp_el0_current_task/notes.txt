@@ -1,0 +1,30 @@
+sp_el0 as the "current" Task Pointer
+=====================================
+
+Instruction:
+  msr   sp_el0, x4      ; x4 = &init_task
+
+Why sp_el0?
+  - On ARMv8, sp_el0 is the EL0 (user) stack pointer.
+  - At EL1 (kernel), sp_el0 is NOT used as a stack pointer.
+  - Linux repurposes it as a fast "current task" register.
+  - No memory access needed — just one register read:
+      mrs  xN, sp_el0   → xN = current task_struct *
+
+How "current" macro works (assembler):
+  .macro get_current_task, rd
+      mrs  \rd, sp_el0
+  .endm
+
+How "current" works in C (kernel/include/asm/current.h):
+  static __always_inline struct task_struct *get_current(void) {
+      unsigned long sp;
+      asm ("mrs %0, sp_el0" : "=r" (sp));
+      return (struct task_struct *)sp;
+  }
+  #define current get_current()
+
+Memory impact:
+  - init_task is a statically allocated task_struct in .data section.
+  - Lives at a fixed virtual address assigned at link time.
+  - After msr sp_el0, x4:  sp_el0 = virtual address of init_task

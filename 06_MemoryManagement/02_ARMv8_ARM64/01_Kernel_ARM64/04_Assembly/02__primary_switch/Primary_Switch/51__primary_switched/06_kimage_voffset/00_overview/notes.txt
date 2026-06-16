@@ -1,0 +1,18 @@
+kimage_voffset — Overview
+==========================
+
+Instructions:
+  adrp  x4, _text          ; x4 = virtual address of kernel .text start
+  sub   x4, x4, x0         ; x4 = VA(_text) - PA(KERNEL_START)
+  str_l x4, kimage_voffset, x5   ; store result globally
+
+Formula:
+  kimage_voffset = VA(_text) - PA(KERNEL_START)
+
+This is the single most important value computed in early boot.
+Every virt_to_phys / phys_to_virt conversion in the entire kernel
+depends on this one value.
+
+Sub-topics:
+  01_virtual_minus_physical  → how the two addresses are obtained and subtracted
+  02_kaslr_impact            → how KASLR changes this value at runtime

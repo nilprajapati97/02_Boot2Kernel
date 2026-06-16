@@ -1,0 +1,36 @@
+Boot CPU Mode Flag
+==================
+
+Instructions:
+  mov   x0, x20
+  bl    set_cpu_boot_mode_flag
+
+What is x20?
+  - x20 = cpu_boot_mode, set in primary_entry:
+      mov   x20, x0    ; x0 = return value of init_kernel_el()
+  - Value is either:
+      BOOT_CPU_MODE_EL1 = 0x00000001   (booted at EL1)
+      BOOT_CPU_MODE_EL2 = 0x00000002   (booted at EL2 / hypervisor)
+
+set_cpu_boot_mode_flag internals:
+  adr_l  x1, __boot_cpu_mode    ; x1 = &__boot_cpu_mode[0]
+  cmp    w0, #BOOT_CPU_MODE_EL2
+  b.ne   1f
+  add    x1, x1, #4             ; if EL2: write to __boot_cpu_mode[1]
+1: str   w0, [x1]               ; store boot mode
+
+__boot_cpu_mode layout (arch/arm64/include/asm/virt.h):
+  extern u32 __boot_cpu_mode[2];
+    [0] = EL1 slot  (written if booted at EL1)
+    [1] = EL2 slot  (written if booted at EL2)
+
+Why store it?
+  - Secondary CPUs check this to match boot mode.
+  - KVM uses this to decide hypervisor setup strategy.
+  - is_hyp_mode_available() reads __boot_cpu_mode to determine
+    if EL2 / virtualization is available.
+
+Who reads it later?
+  - kvm_arch_init_vm()
+  - cpu_hotplug secondary startup paths
+  - is_kernel_in_hyp_mode() / is_hyp_mode_available()

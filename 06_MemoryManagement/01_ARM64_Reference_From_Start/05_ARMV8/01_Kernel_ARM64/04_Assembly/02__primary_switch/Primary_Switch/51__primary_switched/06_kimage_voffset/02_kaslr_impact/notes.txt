@@ -1,0 +1,43 @@
+KASLR Impact on kimage_voffset
+================================
+
+KASLR = Kernel Address Space Layout Randomization
+
+Without KASLR:
+  - Kernel always loaded at KERNEL_START (fixed physical address).
+  - _text always at PAGE_OFFSET (fixed virtual address).
+  - kimage_voffset is always the same value — predictable.
+  - Attacker knows exactly where kernel code/data lives → exploit ready.
+
+With KASLR (CONFIG_RANDOMIZE_BASE):
+  - __pi_early_map_kernel (called before __primary_switched) does:
+      1. Picks a random physical load address for the kernel.
+      2. Picks a random virtual base address.
+      3. Relocates the kernel image (applies ELF relocations).
+      4. Patches literal pool entries (including the one used by ldr x8, =__primary_switched).
+  - After __pi_early_map_kernel, the kernel image is at a DIFFERENT
+    physical and virtual address than what the linker assumed.
+
+Effect on kimage_voffset computation here:
+  adrp  x4, _text    → gives RANDOMIZED virtual address of _text
+  sub   x4, x4, x0   → x0 = RANDOMIZED physical load address
+  Result: kimage_voffset reflects the RUNTIME randomized offset
+
+  This means:
+    virt_to_phys() and phys_to_virt() work correctly regardless of
+    where KASLR placed the kernel.
+
+Concrete KASLR example:
+  Without KASLR:  _text VA = 0xFFFFFF8010080000, PA = 0x40080000
+                  kimage_voffset = 0xFFFFFF7FD0000000  (fixed)
+
+  With KASLR:     _text VA = 0xFFFFFF9A_B3200000, PA = 0x52A00000
+                  kimage_voffset = 0xFFFFFF9A_60E00000  (random each boot)
+
+Security benefit:
+  - Even if an attacker knows kimage_voffset exists, its VALUE changes every boot.
+  - Kernel code/data/stack locations are unpredictable.
+  - Significantly hardens against ROP and kernel pointer leaks.
+
+Note: kimage_voffset is __ro_after_init — once set here, it cannot
+      be changed by any kernel code after init completes.

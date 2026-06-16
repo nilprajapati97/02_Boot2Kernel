@@ -1,0 +1,36 @@
+PHASE OVERVIEW (DEEP FROM SCRATCH)
+
+Phase: 04
+Primary purpose: RCU + IRQ + timer + timekeeping substrate required for safe asynchronous kernel execution
+
+From-scratch explanation:
+- This phase groups calls that must be completed together before the next boot capability level is safe.
+- Think of this as a contract boundary: once complete, the kernel is allowed to assume additional capabilities.
+
+Detailed goals:
+1) Stabilize the exact invariants needed for immediate successor calls.
+2) Avoid exposing partially initialized global state to asynchronous paths.
+3) Prepare predictable failure diagnostics if bring-up fails in this region.
+
+Call sequence in this phase:
+- 41. trace_init
+- 42. initcall_debug_enable
+- 43. context_tracking_init
+- 44. early_irq_init
+- 45. init_IRQ
+- 46. tick_init
+- 47. rcu_init_nohz
+- 48. timers_init
+- 49. srcu_init
+- 50. hrtimers_init
+- 51. softirq_init
+- 52. vdso_setup_data_pages
+- 53. timekeeping_init
+- 54. time_init
+- 55. random_init
+- 56. kfence_init
+
+Interview focus for this phase:
+- Explain why these calls are grouped and ordered this way.
+- Name one likely failure if one early call is delayed or removed.
+- Describe one signal you would inspect in logs/trace to validate correctness.

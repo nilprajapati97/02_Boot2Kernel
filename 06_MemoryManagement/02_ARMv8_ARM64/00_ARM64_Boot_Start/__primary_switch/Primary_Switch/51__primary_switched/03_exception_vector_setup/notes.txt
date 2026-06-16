@@ -1,0 +1,45 @@
+Exception Vector Table Setup — VBAR_EL1
+========================================
+
+Instructions:
+  adr_l  x8, vectors        ; x8 = virtual address of exception vector table
+  msr    vbar_el1, x8        ; VBAR_EL1 = &vectors
+  isb                        ; flush pipeline — make new VBAR effective immediately
+
+What is VBAR_EL1?
+  - Vector Base Address Register EL1.
+  - Holds the base address of the exception vector table for EL1.
+  - On any exception (IRQ, FIQ, SError, Synchronous fault), the CPU
+    jumps to: VBAR_EL1 + offset  (offset determined by exception type and source EL).
+
+ARMv8 Vector Table Layout (must be 2KB aligned):
+  Offset    Exception type                      Source
+  -------   ---------------------------------   ------
+  0x000     Synchronous                         Current EL, SP_EL0
+  0x080     IRQ/vIRQ                            Current EL, SP_EL0
+  0x100     FIQ/vFIQ                            Current EL, SP_EL0
+  0x180     SError/vSError                      Current EL, SP_EL0
+  0x200     Synchronous                         Current EL, SP_ELx
+  0x280     IRQ                                 Current EL, SP_ELx
+  0x300     FIQ                                 Current EL, SP_ELx
+  0x380     SError                              Current EL, SP_ELx
+  0x400     Synchronous                         Lower EL (AArch64)
+  0x480     IRQ                                 Lower EL (AArch64)
+  ...
+
+Where is "vectors" defined?
+  arch/arm64/kernel/entry.S — the main exception entry point table.
+  It is in the .text section, mapped via TTBR1 (kernel virtual address space).
+
+adr_l gives a VIRTUAL address (correct — MMU is on, TTBR1 active).
+
+Why ISB?
+  - msr writes to a system register — it may not be visible to the
+    instruction fetch pipeline immediately.
+  - ISB (Instruction Synchronization Barrier) flushes the pipeline,
+    ensuring all subsequent instructions use the NEW VBAR_EL1 value.
+  - Without ISB: a fault between msr and isb could still dispatch
+    to the old (zero/garbage) vector address.
+
+Before this msr:  Any exception → CPU jumps to 0x0 + offset → CRASH
+After this msr:   Any exception → CPU jumps to vectors + offset → handled safely

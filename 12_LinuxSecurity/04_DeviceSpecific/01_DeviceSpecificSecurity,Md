@@ -1,0 +1,16 @@
+## 🔑 4. Device-Specific Security
+
+In embedded Linux, **security must consider hardware integration**:
+
+* **Secure Boot (U-Boot + Kernel)**
+
+  * Only signed bootloaders, kernels, and rootfs images are allowed.
+* **TPM / HSM integration**
+
+  * Trusted Platform Module or Hardware Security Module for key storage.
+* **Trusted Execution Environment (TEE)**
+
+  * e.g., ARM TrustZone → critical code runs in “secure world”.
+* **Device Tree Restrictions**
+
+  * Disable unused peripherals to avoid attack surface

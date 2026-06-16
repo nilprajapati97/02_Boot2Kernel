@@ -1,0 +1,41 @@
+C-Callable Stack Frame Setup
+=============================
+
+Instructions:
+  stp   x29, x30, [sp, #-16]!   ; push {frame_pointer, link_register}
+  mov   x29, sp                  ; update frame pointer = new SP
+
+What is this doing?
+  This is the standard AArch64 AAPCS64 function prologue.
+  It creates a proper stack frame so that:
+    1. The stack unwinder can walk back through call chains.
+    2. C functions called from here (bl start_kernel, bl finalise_el2, etc.)
+       follow the ABI contract and can use the stack safely.
+
+Register meanings:
+  x29 = FP (Frame Pointer) — points to the saved frame record {prev_fp, lr}
+  x30 = LR (Link Register) — return address (back to __primary_switch)
+         Note: this return address will NEVER be used since start_kernel
+               never returns. ASM_BUG() is there to catch if it ever does.
+
+Stack before stp:
+  ┌───────────────────┐ ← SP  (pointing into init_stack, below pt_regs)
+  │  (free space)     │
+  └───────────────────┘
+
+Stack after stp (pre-decrement by 16):
+  ┌───────────────────┐ ← old SP
+  │  x30 (LR)         │ ← SP+8
+  │  x29 (prev FP)    │ ← SP+0  ← new SP and new x29
+  └───────────────────┘
+
+Frame pointer chain after mov x29, sp:
+  x29 → [saved_x29, saved_x30]
+         ↑ x29 here is the FINAL frame from init_cpu_task (fp=0, lr=0)
+  So the chain is:
+    current_frame → init_task final frame (fp=0) → STOP
+
+Why stp before bl start_kernel?
+  - bl modifies x30 (sets it to return address of start_kernel call).
+  - Without stp first, the original x30 (back to __primary_switch) would
+    be lost — the stack frame would be incomplete/corrupted for the unwinder.

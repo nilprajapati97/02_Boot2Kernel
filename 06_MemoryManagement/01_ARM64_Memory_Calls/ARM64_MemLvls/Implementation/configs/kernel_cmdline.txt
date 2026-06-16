@@ -1,0 +1,21 @@
+# Kernel command line reference for QEMU MM validation
+# Used in run_qemu.sh -append "..."
+
+# Base console
+console=ttyAMA0
+earlycon=pl011,0x09000000
+
+# MM Debug options
+memblock=debug          # Phase 8:  log every memblock_add/remove/reserve
+loglevel=8              # Max kernel log level (see everything)
+page_owner=on           # Phase 11: track page ownership
+slub_debug=FZP          # Phase 12: F=sanity, Z=redzone, P=poisoning
+nokaslr                 # Phase 5:  disable KASLR for reproducible addresses
+printk.devkmsg=on       # Allow userspace to read kmsg
+
+# Optional (uncomment as needed)
+# memtest=4             # Run early memory test pattern
+# mem=2G                # Limit memory to 2GB (test Phase 8 mem= handling)
+# crashkernel=256M      # Reserve crash kernel memory (test Phase 10)
+# cma=128M              # Set CMA pool size (test Phase 10)
+# initcall_debug        # Log every init call with timing

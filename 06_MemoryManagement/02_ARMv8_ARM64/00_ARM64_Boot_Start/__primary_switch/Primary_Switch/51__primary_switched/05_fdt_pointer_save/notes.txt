@@ -1,0 +1,41 @@
+FDT Pointer Save — __fdt_pointer
+=================================
+
+Instruction:
+  str_l  x21, __fdt_pointer, x5
+
+Macro expansion of str_l:
+  adrp  x5, __fdt_pointer              ; x5 = page-aligned VA of __fdt_pointer
+  str   x21, [x5, :lo12:__fdt_pointer] ; store x21 → *__fdt_pointer
+
+What is x21?
+  - x21 has held the FDT (Flattened Device Tree) PHYSICAL address
+    since preserve_boot_args at the very start of primary_entry.
+  - It is a callee-saved register — preserved across all function calls
+    from primary_entry through to this point.
+  - x21 = physical address of the DTB blob in RAM
+           (passed by the bootloader in x0 at kernel entry)
+
+What is __fdt_pointer?
+  - Declared in arch/arm64/kernel/setup.c:
+      phys_addr_t __fdt_pointer __initdata;
+  - Lives in the .init.data section.
+  - After this store: __fdt_pointer = physical address of FDT blob
+
+Who uses it later?
+  - setup_arch() → setup_machine_fdt(__fdt_pointer)
+  - This parses the Device Tree to discover hardware:
+      CPUs, memory regions, peripherals, interrupts, clocks, etc.
+
+Memory picture:
+  Physical RAM:                          Kernel .init.data (virtual):
+  ┌──────────────────────┐              ┌───────────────────────────┐
+  │  FDT blob            │              │  __fdt_pointer = 0x4xxxxxx│
+  │  (device tree data)  │◄─────────────│  (stores PA of FDT)       │
+  └──────────────────────┘              └───────────────────────────┘
+  0x4xxxxxxx (physical)                 0xFFFFFF80_1xxxxxxx (virtual)
+
+Why store physical address (not virtual)?
+  - The FDT blob is NOT mapped into the kernel virtual address space yet.
+  - setup_machine_fdt() will map it using early_memremap() before reading it.
+  - Physical address is what's needed for that early mapping step.

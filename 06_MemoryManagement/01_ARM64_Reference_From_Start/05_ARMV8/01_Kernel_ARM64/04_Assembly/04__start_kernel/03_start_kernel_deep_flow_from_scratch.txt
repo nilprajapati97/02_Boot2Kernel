@@ -1,0 +1,35 @@
+START_KERNEL: DEEP FLOW FROM SCRATCH
+
+0) First principles
+- A newly booting kernel begins with limited guarantees: incomplete allocators, constrained timing guarantees, interrupts often disabled, and no normal process ecosystem.
+- start_kernel incrementally establishes guarantees until normal concurrent execution becomes safe.
+
+1) Bootstrap contracts
+- Early calls validate/establish CPU identity, stack safety, and core object metadata.
+- setup_arch bridges architecture-specific machine discovery into generic kernel paths.
+
+2) Configuration and topology consolidation
+- Command line parsing and boot config consume platform/runtime directives.
+- CPU ID space, per-CPU memory, and NUMA bootstrap are prepared to avoid topology ambiguity later.
+
+3) Memory and scheduler core readiness
+- Memory core transitions from early boot assumptions toward allocator-backed behavior.
+- Trap/exception scaffolding and tracing hooks are enabled enough for diagnosis.
+- Scheduler baseline appears before broader asynchronous activity.
+
+4) Asynchronous safety substrate
+- IRQ descriptors/controllers, tick, timers, high-res timers, and timekeeping become coherent.
+- RCU/SRCU setup ensures deferred lifecycle operations can be reasoned safely.
+- Interrupts become enabled only after key correctness boundaries are satisfied.
+
+5) Security, identity, and control plane
+- Credentials, PID internals, namespaces, VFS caches, proc roots, and signal machinery become operational.
+- cgroup/memcg/cpuset control surfaces appear to support resource and isolation policy.
+
+6) Platform tail and final transition
+- ACPI late pieces and sanitizers complete after generic infrastructure stabilizes.
+- rest_init transitions from boot orchestrator context into persistent runtime thread model.
+
+Why this matters in interviews:
+- Advanced interviewers look for dependency reasoning, not rote function-name recitation.
+- Strong answer style: "This call exists here because later subsystem X assumes invariant Y; if moved, failure class Z emerges."

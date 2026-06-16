@@ -1,0 +1,34 @@
+PHASE OVERVIEW (DEEP FROM SCRATCH)
+
+Phase: 01
+Primary purpose: Bootstrap CPU identity, critical early state, and first architecture handoff contracts
+
+From-scratch explanation:
+- This phase groups calls that must be completed together before the next boot capability level is safe.
+- Think of this as a contract boundary: once complete, the kernel is allowed to assume additional capabilities.
+
+Detailed goals:
+1) Stabilize the exact invariants needed for immediate successor calls.
+2) Avoid exposing partially initialized global state to asynchronous paths.
+3) Prepare predictable failure diagnostics if bring-up fails in this region.
+
+Call sequence in this phase:
+- 1. set_task_stack_end_magic
+- 2. smp_setup_processor_id
+- 3. debug_objects_early_init
+- 4. init_vmlinux_build_id
+- 5. cgroup_init_early
+- 6. local_irq_disable
+- 7. boot_cpu_init
+- 8. page_address_init
+- 9. pr_notice
+- 10. setup_arch
+- 11. mm_core_init_early
+- 12. jump_label_init
+- 13. static_call_init
+- 14. early_security_init
+
+Interview focus for this phase:
+- Explain why these calls are grouped and ordered this way.
+- Name one likely failure if one early call is delayed or removed.
+- Describe one signal you would inspect in logs/trace to validate correctness.

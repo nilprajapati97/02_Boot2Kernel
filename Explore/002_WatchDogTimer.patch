@@ -1,0 +1,10 @@
+🔄 What is a Watchdog?
+A watchdog is like a safety supervisor for your firmware.
+Your code must periodically report: “I’m alive.”
+If it fails to do so → the watchdog automatically resets the system.
+
+⚠️ What happens when firmware hangs?
+Your entire system becomes useless — especially in real-time applications like IoT monitoring, automation, or industrial control
+
+🔥 Key Insight:
+A system without a watchdog is a system waiting to fail silently.

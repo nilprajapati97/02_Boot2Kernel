@@ -1,0 +1,34 @@
+Final Stack Frame Marker
+========================
+
+Instructions:
+  stp   xzr, xzr, [sp, #S_STACKFRAME]     ; stackframe.fp = 0, stackframe.lr = 0
+  mov   x5, #FRAME_META_TYPE_FINAL
+  str   x5,  [sp, #S_STACKFRAME_TYPE]      ; mark as end-of-chain
+  add   x29, sp, #S_STACKFRAME             ; frame pointer → stackframe
+
+What is S_STACKFRAME?
+  S_STACKFRAME = offsetof(struct pt_regs, stackframe)
+  Defined in asm-offsets.c.
+  The stackframe sits INSIDE the pt_regs struct reserved at the top of the stack.
+
+struct stackframe layout (arch/arm64/include/asm/stacktrace/frame.h):
+  struct frame_record {
+      unsigned long fp;   // ← set to 0 (null = chain ends here)
+      unsigned long lr;   // ← set to 0
+  };
+  u64 type;               // ← FRAME_META_TYPE_FINAL
+
+Why fp=0 and lr=0?
+  - The stack unwinder walks the frame pointer chain: x29 → prev_fp → ...
+  - When fp == 0, the unwinder stops — this is the BOTTOM of the call stack.
+  - Every task's stack has this sentinel at the top in pt_regs.
+
+x29 (Frame Pointer) after this:
+  x29 = sp + S_STACKFRAME
+  x29 now points to the frame record inside pt_regs.
+  This correctly chains into the unwinder for init_task / PID 0.
+
+Unwinder behavior:
+  Any stack trace for the boot CPU will unwind up the call chain and
+  terminate cleanly at this frame — without reading garbage memory.

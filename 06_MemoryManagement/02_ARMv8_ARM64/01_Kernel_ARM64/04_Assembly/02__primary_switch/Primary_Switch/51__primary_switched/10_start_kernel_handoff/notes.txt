@@ -1,0 +1,41 @@
+Handoff to start_kernel — Point of No Return
+=============================================
+
+Instructions:
+  ldp   x29, x30, [sp], #16    ; restore stack frame (pop {fp, lr})
+  bl    start_kernel            ; call into C kernel — NEVER returns
+  ASM_BUG()                    ; panic/BUG if start_kernel ever returns
+
+ldp (restore frame):
+  - Pops the frame that was pushed with stp x29,x30 earlier.
+  - Restores x29 (frame pointer) and x30 (link register).
+  - SP advances by 16 (post-increment).
+  - This is purely for ABI correctness — x30 now holds return address
+    back to __primary_switch, but it will never be used.
+
+bl start_kernel:
+  - start_kernel() is in init/main.c — the first C function of the kernel.
+  - bl sets x30 = PC+4 (return address after bl) before jumping.
+  - start_kernel() initializes everything: memory, scheduler, devices, etc.
+  - It ends by calling rest_init() → kernel_thread(kernel_init) → idle loop.
+  - IT NEVER RETURNS to __primary_switched.
+
+ASM_BUG():
+  - If start_kernel() somehow returns (should never happen), this fires.
+  - Expands to a BRK instruction that triggers a debug exception.
+  - Results in a kernel panic with a "BUG" message.
+
+State of the system when start_kernel() is called:
+  ┌────────────────────────────────────────────────────────┐
+  │  MMU:          ON (TTBR0 identity + TTBR1 kernel maps) │
+  │  SP:           Valid kernel stack (init_stack)          │
+  │  sp_el0:       &init_task (current = PID 0)             │
+  │  VBAR_EL1:     &vectors (exceptions handled)           │
+  │  tpidr_el1:    __per_cpu_offset[0] (per-cpu works)      │
+  │  kimage_voffset: computed (virt↔phys conversions work) │
+  │  __fdt_pointer: set (device tree address saved)        │
+  │  x29 (FP):    Valid frame chain, terminates at fp=0    │
+  │  EL:          EL1 (or EL2 with VHE)                    │
+  └────────────────────────────────────────────────────────┘
+  → All infrastructure needed for C code is in place.
+  → start_kernel() can safely use all kernel subsystems.

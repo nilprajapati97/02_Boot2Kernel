@@ -1,0 +1,25 @@
+INTERVIEW MASTER NOTES (EXTENDED)
+
+Core scoring dimensions:
+- Dependency reasoning depth
+- Correctness under concurrency assumptions
+- Failure-mode specificity
+- Practical observability and debug approach
+
+What to explicitly include in answers:
+- Precondition and postcondition of a call
+- Who consumes the postcondition next
+- What class of bug appears if ordering shifts
+- How you would confirm this hypothesis on a failing system
+
+Strong terminology:
+- invariant boundary
+- asynchronous safety window
+- bootstrap vs runtime contract
+- architecture hook vs generic core orchestration
+- deferred lifecycle mechanism (RCU/SRCU/workqueue)
+
+Weak-answer patterns to avoid:
+- Listing names without causal explanation
+- Over-focusing on one subsystem while ignoring cross-subsystem dependencies
+- Ignoring interrupt state assumptions

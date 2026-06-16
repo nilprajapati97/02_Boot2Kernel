@@ -1,0 +1,14 @@
+# Kbuild file for ARM64 MM inspection modules
+obj-m += 01_mmu_state_inspect.o
+obj-m += 02_idmap_walk.o
+obj-m += 03_pagetable_walk.o
+obj-m += 04_ttbr_translate.o
+obj-m += 05_kernel_segments.o
+obj-m += 06_boot_info.o
+obj-m += 07_fixmap_inspect.o
+obj-m += 08_memblock_dump.o
+obj-m += 09_linear_map_verify.o
+obj-m += 10_zone_inspect.o
+obj-m += 11_buddy_inspect.o
+obj-m += 12_slab_inspect.o
+obj-m += 13_vmalloc_inspect.o

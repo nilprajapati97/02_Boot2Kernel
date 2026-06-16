@@ -1,0 +1,30 @@
+PHASE OVERVIEW (DEEP FROM SCRATCH)
+
+Phase: 06
+Primary purpose: Locking checks, initrd safety, NUMA policies, and transition into richer scheduling/time calibration
+
+From-scratch explanation:
+- This phase groups calls that must be completed together before the next boot capability level is safe.
+- Think of this as a contract boundary: once complete, the kernel is allowed to assume additional capabilities.
+
+Detailed goals:
+1) Stabilize the exact invariants needed for immediate successor calls.
+2) Avoid exposing partially initialized global state to asynchronous paths.
+3) Prepare predictable failure diagnostics if bring-up fails in this region.
+
+Call sequence in this phase:
+- 67. pr_crit
+- 68. page_to_pfn
+- 69. setup_per_cpu_pageset
+- 70. numa_policy_init
+- 71. acpi_early_init
+- 72. late_time_init
+- 73. sched_clock_init
+- 74. calibrate_delay
+- 75. arch_cpu_finalize_init
+- 76. pid_idr_init
+
+Interview focus for this phase:
+- Explain why these calls are grouped and ordered this way.
+- Name one likely failure if one early call is delayed or removed.
+- Describe one signal you would inspect in logs/trace to validate correctness.

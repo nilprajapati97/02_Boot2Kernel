@@ -1,0 +1,46 @@
+ADVANCED INTERVIEW BANK (DEEP)
+
+1) Why is start_kernel split into many narrow initialization calls?
+Answer:
+- To express strict dependency edges explicitly and keep fault localization possible.
+- Monolithic initialization obscures invariants and makes ordering regressions harder to detect.
+
+2) Why are interrupts disabled across early windows?
+Answer:
+- Before IRQ/timer/scheduler/locking invariants are mature, asynchronous execution can observe invalid state.
+- The disabled window is a correctness guardrail, not only a convenience.
+
+3) Explain early vs late randomness initialization.
+Answer:
+- Early randomness seeds minimal consumers; later completion raises entropy quality for stronger security-sensitive use.
+- Ordering with timekeeping and broader hardware readiness improves robustness.
+
+4) Why do security hooks appear both early and later?
+Answer:
+- Early hooks prevent policy vacuum during object graph expansion.
+- Later security init completes full policy/data structures when broader kernel services are available.
+
+5) Why is scheduler initialized before all runtime topology details are final?
+Answer:
+- Kernel needs immediate scheduling semantics, while richer topology tuning can be layered later.
+- This separates "can schedule" from "fully optimized scheduling topology".
+
+6) What can go wrong if VFS/caches are initialized too early?
+Answer:
+- They may allocate/register objects before memory/security prerequisites, causing corruption or policy bypass windows.
+
+7) What does rest_init change semantically?
+Answer:
+- Boot orchestration ends; runtime model begins with persistent kernel threads and steady-state scheduling behavior.
+
+8) Debug strategy when boot freezes in mid-start_kernel?
+Answer:
+- Bisect by phase boundary, check last confirmed invariant, validate IRQ state expectation, add tracepoints/early prints around edge transitions.
+
+9) Why do interviewers care about ordering more than API detail here?
+Answer:
+- Production kernel failures often arise from subtle sequencing changes across subsystems, especially during bring-up and configuration drift.
+
+10) Give one ideal concise answer pattern.
+Answer:
+- "Function F appears at position N because it provides invariant I required by G/H. Moving it later risks failure class R. We verify with logs/tracepoints around boundary B."

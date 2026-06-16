@@ -1,0 +1,33 @@
+Shadow Call Stack (SCS)
+========================
+
+Instruction:
+  scs_load_current        ; macro — loads x18 with SCS pointer
+
+Macro expansion (CONFIG_SHADOW_CALL_STACK enabled):
+  get_current_task  x18         ; mrs x18, sp_el0  → x18 = &init_task
+  ldr  x18, [x18, #TSK_TI_SCS_SP]   ; x18 = init_task.thread_info.scs_sp
+
+Macro expansion (CONFIG_SHADOW_CALL_STACK disabled):
+  (empty — no-op)
+
+What is the Shadow Call Stack?
+  - A SEPARATE stack used ONLY for storing return addresses.
+  - Lives in a different memory region than the normal kernel stack.
+  - x18 is the dedicated SCS pointer register (reserved by ABI).
+  - On every function call, the return address is pushed to BOTH
+    the normal stack and the shadow stack.
+  - On return, the address is verified against the shadow stack.
+  - Protects against ROP (Return-Oriented Programming) attacks.
+
+Memory layout with SCS:
+  Normal stack (init_stack):        Shadow stack (scs_base):
+  ┌──────────────────┐              ┌──────────────────┐
+  │  x30 (ret addr)  │              │  x30 copy        │  ← verified on ret
+  │  x29 (fp)        │              │  ...             │
+  │  locals          │              └──────────────────┘
+  └──────────────────┘              ← x18 points here
+
+Where scs_sp lives:
+  struct task_struct → thread_info → scs_sp
+  TSK_TI_SCS_SP = offsetof(struct task_struct, thread_info.scs_sp)

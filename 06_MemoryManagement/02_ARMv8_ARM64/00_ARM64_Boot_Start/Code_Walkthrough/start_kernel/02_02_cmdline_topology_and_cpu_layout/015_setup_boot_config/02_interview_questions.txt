@@ -1,0 +1,52 @@
+INTERVIEW QUESTIONS AND DETAILED ANSWERS
+
+Function:
+- setup_boot_config
+
+1) What is the single-sentence purpose of this function in boot?
+Answer:
+- It provides one required initialization contract so the next boot step can execute safely.
+
+2) Why is this function placed at sequence index 15?
+Answer:
+- Because its prerequisites are satisfied by early_security_init and its guarantees are consumed by setup_command_line.
+
+3) What assumptions does this function make about system state?
+Answer:
+- Controlled boot ordering, stable enough upstream initialization, and expected interrupt-state discipline for this region.
+
+4) What concrete risk appears if this function is delayed?
+Answer:
+- Downstream code may run with absent invariants, producing crashes, races, or hard-to-diagnose corruption.
+
+5) What risk appears if this function runs too early?
+Answer:
+- It may consume uninitialized dependencies and fail non-deterministically under platform variance.
+
+6) How would you isolate faults around this call quickly?
+Answer:
+- Place diagnostic boundaries around this step and immediate neighbors (early_security_init / setup_command_line), then bisect by phase.
+
+7) What type of kernel evidence is highest signal here?
+Answer:
+- Early boot logs, initcall debug traces, lockdep/IRQ anomalies, and subsystem-specific tracepoints.
+
+8) How is this related to concurrency correctness?
+Answer:
+- Boot sequencing controls when asynchronous behavior is allowed to observe shared state; this function participates in that gatekeeping.
+
+9) How would you explain this to a non-kernel C engineer?
+Answer:
+- Treat boot like a strict pipeline where each stage validates and enriches global state before the next stage runs.
+
+10) What would a strong NVIDIA/Google/Qualcomm answer include?
+Answer:
+- Dependency rationale, invariant language, one realistic failure mode, and a concrete debug plan.
+
+11) What follow-up question should you expect from interviewer?
+Answer:
+- "Which next subsystem concretely depends on this, and what breaks first if it is missing?"
+
+12) How do you show depth beyond memorization?
+Answer:
+- Reference exact implementation file, touched data structures, and phase-boundary observability strategy.

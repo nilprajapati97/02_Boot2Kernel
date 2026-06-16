@@ -1,0 +1,33 @@
+PHASE OVERVIEW (DEEP FROM SCRATCH)
+
+Phase: 03
+Primary purpose: Memory core expansion, exception basics, tracing hooks, scheduler baseline, and early async infrastructure
+
+From-scratch explanation:
+- This phase groups calls that must be completed together before the next boot capability level is safe.
+- Think of this as a contract boundary: once complete, the kernel is allowed to assume additional capabilities.
+
+Detailed goals:
+1) Stabilize the exact invariants needed for immediate successor calls.
+2) Avoid exposing partially initialized global state to asynchronous paths.
+3) Prepare predictable failure diagnostics if bring-up fails in this region.
+
+Call sequence in this phase:
+- 28. trap_init
+- 29. mm_core_init
+- 30. maple_tree_init
+- 31. poking_init
+- 32. ftrace_init
+- 33. early_trace_init
+- 34. sched_init
+- 35. local_irq_disable
+- 36. radix_tree_init
+- 37. housekeeping_init
+- 38. workqueue_init_early
+- 39. rcu_init
+- 40. kvfree_rcu_init
+
+Interview focus for this phase:
+- Explain why these calls are grouped and ordered this way.
+- Name one likely failure if one early call is delayed or removed.
+- Describe one signal you would inspect in logs/trace to validate correctness.

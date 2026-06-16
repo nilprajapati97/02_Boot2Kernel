@@ -1,0 +1,34 @@
+__primary_switched — Overview
+==============================
+
+Entry Condition:
+  - MMU is ON (TTBR0 = identity map, TTBR1 = kernel page tables)
+  - PC is now in kernel VIRTUAL address space (0xFFFFFF80_1XXXXXXX)
+  - x0  = __pa(KERNEL_START)  — physical address of kernel start
+  - x20 = cpu_boot_mode       — EL1 or EL2
+  - x21 = FDT physical address — saved since primary_entry
+
+Purpose:
+  This is the LAST assembly function before C code (start_kernel).
+  It sets up everything the C runtime needs:
+    1. Current task (init_task / PID 0)
+    2. Kernel stack (init_stack)
+    3. Exception vector table (VBAR_EL1)
+    4. FDT pointer global variable
+    5. kimage_voffset (virtual - physical delta)
+    6. Boot mode flag
+    7. KASAN shadow memory (if enabled)
+    8. VHE/EL2 finalization
+    9. Calls start_kernel() — never returns
+
+Execution order:
+  __primary_switched
+    ├── init_cpu_task         (sets up task/stack/per-cpu)
+    ├── msr vbar_el1          (exception vectors)
+    ├── stp x29,x30 / mov x29 (C stack frame)
+    ├── str_l __fdt_pointer   (save FDT address)
+    ├── kimage_voffset        (virt - phys offset)
+    ├── set_cpu_boot_mode_flag
+    ├── kasan_early_init      (optional)
+    ├── finalise_el2
+    └── start_kernel          ← point of no return

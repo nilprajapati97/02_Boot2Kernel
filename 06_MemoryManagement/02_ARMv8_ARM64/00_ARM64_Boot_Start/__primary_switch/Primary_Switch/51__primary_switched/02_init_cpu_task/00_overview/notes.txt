@@ -1,0 +1,22 @@
+init_cpu_task — Overview
+========================
+
+Assembly macro call:
+  adr_l   x4, init_task
+  init_cpu_task x4, x5, x6
+    → tsk  = x4 = &init_task
+    → tmp1 = x5
+    → tmp2 = x6
+
+What this macro does (5 sub-steps):
+  1. msr sp_el0, tsk          → register init_task as "current"
+  2. ldr/add/sub SP           → switch to init_task kernel stack
+  3. stp/str stackframe       → stamp final unwind frame marker
+  4. scs_load_current         → load shadow call stack pointer
+  5. set_this_cpu_offset      → load per-CPU base into tpidr_el1
+
+Why it must happen first:
+  - All subsequent code (including VBAR setup and C functions)
+    depends on a valid stack and a valid "current" task pointer.
+  - If an exception fires before this, the kernel cannot handle it
+    safely (SP is still pointing at the temporary early_init_stack).

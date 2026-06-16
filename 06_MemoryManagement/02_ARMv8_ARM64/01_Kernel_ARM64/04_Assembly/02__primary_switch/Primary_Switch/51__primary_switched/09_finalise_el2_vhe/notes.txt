@@ -1,0 +1,44 @@
+finalise_el2 — VHE Negotiation
+================================
+
+Instructions:
+  mov   x0, x20         ; pass boot mode (EL1 or EL2)
+  bl    finalise_el2    ; prefer VHE if possible
+
+What is VHE?
+  VHE = Virtualization Host Extensions (ARMv8.1+)
+  Defined by: HCR_EL2.E2H = 1
+
+Without VHE (classic):
+  EL0 = userspace
+  EL1 = kernel
+  EL2 = hypervisor (KVM)
+  Kernel↔KVM transitions require EL1↔EL2 world switches — expensive.
+
+With VHE:
+  EL0 = userspace (unchanged)
+  EL1/EL2 merged: kernel runs "at EL2" transparently
+  KVM host code runs directly without EL2 traps — much faster.
+
+What finalise_el2 does:
+  - If booted at EL2 (x0 == BOOT_CPU_MODE_EL2) AND hardware has VHE:
+      → Keeps HCR_EL2.E2H = 1 (VHE stays active)
+      → Kernel continues running at EL2 (the VHE way)
+  - If booted at EL1, or hardware lacks VHE:
+      → Drops to EL1 (ERET from EL2 to EL1)
+      → Standard non-VHE operation
+
+HCR_EL2 register:
+  Bit E2H (bit 34): Enables VHE when set.
+  Set by init_el2 during init_kernel_el() earlier in boot.
+
+ARM64 system register redirection with VHE:
+  With E2H=1, accesses to EL1 registers (sctlr_el1, ttbr0_el1, etc.)
+  are REDIRECTED to EL2 equivalents (sctlr_el2, ttbr0_el2, etc.)
+  by hardware — completely transparent to kernel code.
+
+Impact on this boot path:
+  - After finalise_el2, the exception level for kernel execution is FINAL.
+  - start_kernel() runs at either EL1 (no VHE) or EL2 (VHE).
+  - All subsequent exception handling, sysreg accesses, and KVM ops
+    are based on this final EL decision.

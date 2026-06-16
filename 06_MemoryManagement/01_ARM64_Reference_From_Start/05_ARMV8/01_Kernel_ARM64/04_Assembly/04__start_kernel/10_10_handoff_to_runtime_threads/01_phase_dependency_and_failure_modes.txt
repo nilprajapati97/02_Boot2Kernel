@@ -1,0 +1,24 @@
+PHASE DEPENDENCY AND FAILURE MODES (DEEP)
+
+Dependency graph intuition:
+- Upstream phase provides prerequisites; this phase strengthens them into broader runtime assumptions.
+- Downstream phase assumes this phase is complete and coherent.
+
+Common dependency edges in this phase:
+- data-structure readiness before registration/usage
+- interrupt state correctness before asynchronous exposure
+- timing and ordering boundaries before randomness/security-sensitive consumers
+
+Failure classes if ordering is violated:
+1) Immediate panic or boot hang
+2) Locking/IRQ inversion bugs
+3) Silent state corruption discovered later
+4) Missing policy enforcement windows
+
+Functions covered:
+- 104. prevent_tail_call_optimization
+
+Debug recipe for this phase:
+- Confirm last successful function in call order.
+- Verify expected IRQ state transition boundary.
+- Inspect associated subsystem tracepoints/log signatures.
